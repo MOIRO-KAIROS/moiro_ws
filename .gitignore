@@ -1,5 +1,6 @@
 **/.vscode
 **/__pycache__
-**/log
-**/build
-**/install
+log
+build
+install
+**/yolov8m-pose.pt
