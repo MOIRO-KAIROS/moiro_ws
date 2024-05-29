@@ -1,6 +1,3 @@
-[submodule "src/moiro_agv"]
-	path = src/moiro_agv
-	url = https://github.com/MOIRO-KAIROS/moiro_agv.git
 [submodule "src/moiro_vision"]
 	path = src/moiro_vision
 	url = https://github.com/MOIRO-KAIROS/moiro_vision.git
