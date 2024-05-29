@@ -7,3 +7,6 @@
 [submodule "src/realsense-ros"]
 	path = src/realsense-ros
 	url = https://github.com/IntelRealSense/realsense-ros.git
+[submodule "src/moiro_interfaces"]
+	path = src/moiro_interfaces
+	url = https://github.com/MOIRO-KAIROS/moiro_interfaces.git
