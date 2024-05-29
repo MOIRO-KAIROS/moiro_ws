@@ -44,7 +44,7 @@ class Myagv_Window(moiro_window, QMainWindow):
                 mes = f"Initialized with <b>{person_name}</b>"
             else:
                 mes = show_warning_message(f'Target person Uninitialized')
-            self.adaface_process = subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source ~/moiro_ws/install/setup.bash && {command}"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.adaface_process = subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source ~/moiro_ws/install/setup.bash && {command}"], shell=False)
             self.textBrowser_log.append(f" >>> {mes}")
             
             # GUI 차단되지 않고 프로세스 결과를 가져오기 위해 스레드 사용
@@ -68,14 +68,14 @@ class Myagv_Window(moiro_window, QMainWindow):
         current_time = self.get_current_time()
         if self.adaface_process:
             for pid in kill_pid:
-                subprocess.Popen(['bash', '-c', f"ps -ef | grep '{pid}' | grep -v grep | awk '{{print $2}}' | xargs kill"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                subprocess.Popen(['bash', '-c', f"ps -ef | grep '{pid}' | grep -v grep | awk '{{print $2}}' | xargs kill"], shell=False)
             self.adaface_process = None  # Reset the subprocess
             mes = 'Stop Face recognition(Adaface)'
             self.textBrowser_log.append(f"[{str(current_time)}] {mes}")
 
     def execute_in_terminal(self, command=""):
         full_command = f"source ~/.bashrc && source ~/moiro_ws/install/setup.bash && {command}"
-        process = subprocess.Popen(['bash', '-c', full_command], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(['bash', '-c', full_command], shell=False)
         # process.wait()
 
     def get_current_time(self):
@@ -92,7 +92,7 @@ class Myagv_Window(moiro_window, QMainWindow):
                 if person_name:
                     mes += person_name
                     command = f"ros2 service call /vision/person_name moiro_interfaces/srv/Person \"{{person_name: {person_name}}}\""
-                    subprocess.Popen(['bash', '-c', f"source ~/moiro_ws/install/setup.bash && {command}"], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    subprocess.Popen(['bash', '-c', f"source ~/moiro_ws/install/setup.bash && {command}"], shell=False)
             else:
                 mes = show_error_message("push 'Start FR' button, then push 'reset' button")
             
