@@ -27,9 +27,10 @@ git submodule update --init --recursive
 ### 2. 구글 드라이브에서 파일 다운로드
 #### (1)  ```pretrained``` 폴더 생성 후, weight(.ckpt) 다운로드
 - 다운로드 (링크 클릭)
-| Arch | Dataset    | Link                                                                                         |
-|------|------------|----------------------------------------------------------------------------------------------|
-| R50  | MS1MV2     | [gdrive](https://drive.google.com/file/d/1eUaSHG4pGlIZK7hBkqjyp2fc2epKoBvI/view?usp=sharing) |
+  | Arch | Dataset    | Link                                                                                         |
+  |------|------------|----------------------------------------------------------------------------------------------|
+  | R50  | MS1MV2     | [gdrive](https://drive.google.com/file/d/1eUaSHG4pGlIZK7hBkqjyp2fc2epKoBvI/view?usp=sharing) |
+
 #### (2) ```embed``` 폴더 생성 후, features.pt & ids.pt 생성
 - 생성 방법: [moiro_vision](https://github.com/MOIRO-KAIROS/moiro_vision) 레포지토리로 이동
   
@@ -53,3 +54,23 @@ git submodule update --init --recursive
   ├── README.md
   └── yolov8_ros
   ```
+
+### 3. ROS2 - colcon build
+```sh
+cd moiro_ws
+source /opt/ros/humble/setup.bash
+colcon build
+```
+
+### 4. run ROS2
+#### (1) Terminal로 실행하는 방법
+```sh
+source ~/moiro_ws/install/setup.bash
+ros2 launch adaface_ros adaface.launch.py person_name:=yeonju
+```
+
+#### (2) GUI로 실행하는 방법
+```sh
+// pip install pyqt5==5.13
+python3 moiro_testTool/main.py
+```
