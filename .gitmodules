@@ -10,6 +10,3 @@
 [submodule "src/moiro_description"]
 	path = src/moiro_description
 	url = https://github.com/MOIRO-KAIROS/moiro_description.git
-[submodule "moiro_agv"]
-	path = moiro_agv
-	url = https://github.com/MOIRO-KAIROS/moiro_agv.git
