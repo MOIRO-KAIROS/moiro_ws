@@ -58,12 +58,12 @@ class Myagv_Window(moiro_window, QMainWindow):
         
         
     def stop_adaface(self):
-        kill_pid = ['/home/lee52/moiro_ws/install/adaface_ros/lib/adaface_ros/world_node',
-                    '/home/lee52/moiro_ws/install/adaface_ros/lib/adaface_ros/face_recognition',
-                    '/home/lee52/moiro_ws/install/yolov8_ros/lib/yolov8_ros/debug_node',
-                    '/home/lee52/moiro_ws/install/yolov8_ros/lib/yolov8_ros/tracking_node',
-                    '/home/lee52/moiro_ws/install/yolov8_ros/lib/yolov8_ros/yolov8_node',
-                    '/home/lee52/moiro_ws/install/realsense2_camera/lib/realsense2_camera/realsense2_camera_node'
+        kill_pid = ['~/moiro_ws/install/adaface_ros/lib/adaface_ros/world_node',
+                    '~/moiro_ws/install/adaface_ros/lib/adaface_ros/face_recognition',
+                    '~/moiro_ws/install/yolov8_ros/lib/yolov8_ros/debug_node',
+                    '~/moiro_ws/install/yolov8_ros/lib/yolov8_ros/tracking_node',
+                    '~/moiro_ws/install/yolov8_ros/lib/yolov8_ros/yolov8_node',
+                    '~/moiro_ws/install/realsense2_camera/lib/realsense2_camera/realsense2_camera_node'
                     ]
         current_time = self.get_current_time()
         if self.adaface_process:
