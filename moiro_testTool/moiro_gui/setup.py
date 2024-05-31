@@ -11,7 +11,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
     ],
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'rclpy', 'cv_bridge'],
     zip_safe=True,
     maintainer='minha',
     maintainer_email='alsgk0404@hanyang.ac.kr',
@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-          'moiro_gui = moiro_gui.moiro_window:main',
+          'moiro_gui = moiro_gui.moiro_gui:main',
         ],
     },
 )

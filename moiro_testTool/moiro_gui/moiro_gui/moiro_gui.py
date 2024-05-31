@@ -6,22 +6,51 @@ import time
 import threading
 import traceback
 import subprocess
-import time
 from PyQt5.QtWidgets import QMainWindow, QApplication
 
-from moiro_window import Ui_MainWindow as moiro_window
+from moiro_gui.moiro_window import Ui_MainWindow as moiro_window
 
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
 import cv2
-from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
+from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
 
-lock = False
+class ImageListenerThread(QThread):
+    change_pixmap_signal = pyqtSignal(QImage)
+
+    def __init__(self):
+        super().__init__()
+        rclpy.init()
+        self.node = rclpy.create_node('image_listener')
+        self.subscription = self.node.create_subscription(Image, '/camera1/image_raw', self.listener_callback, 10)
+        # self.subscription = self.node.create_subscription(Image, '/vision/dbg_image', self.listener_callback, 10)
+        self.bridge = CvBridge()
+
+    def listener_callback(self, msg):
+        cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+        height, width, channel = cv_image.shape
+        bytes_per_line = 3 * width
+        q_image = QImage(cv_image.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+        self.change_pixmap_signal.emit(q_image)
+
+    def run(self):
+        while rclpy.ok():
+            rclpy.spin_once(self.node, timeout_sec=0.1)
+
+    def stop(self):
+        self.node.destroy_node()
+        rclpy.shutdown()
 
 class CameraThread(QThread):
     change_pixmap_signal = pyqtSignal(QImage)
 
     def run(self):
-        self.capture = cv2.VideoCapture(0)
+        # Set the camera device number
+        self.capture = cv2.VideoCapture('/dev/video0')
         while True:
             ret, frame = self.capture.read()
             if ret:
@@ -47,24 +76,30 @@ class Myagv_Window(moiro_window, QMainWindow):
 
         self.follower_button.setCheckable(True)
         self.follower_button.clicked.connect(self.toggle_follower)
-
-        self.follower_button.clicked.connect(self.reset_depth_range)
         self.reset_fr.clicked.connect(self.reset_person_name)
         self.reset_hf.clicked.connect(self.reset_depth_range)
 
         # 카메라 스레드 시작
-        self.thread = CameraThread()
-        self.thread.change_pixmap_signal.connect(self.update_image)
-        self.thread.start()
+        self.camera_thread = CameraThread()
+        self.camera_thread.change_pixmap_signal.connect(self.update_image)
+        self.camera_thread.start()
+
+        # ROS2 이미지 리스너 스레드 시작
+        self.image_listener_thread = ImageListenerThread()
+        self.image_listener_thread.change_pixmap_signal.connect(self.update_dbg)
+        self.image_listener_thread.start()
 
     def closeEvent(self, event):
-        self.thread.terminate()
+        self.camera_thread.terminate()
+        self.image_listener_thread.stop()
         event.accept()
 
     def update_image(self, image):
         self.camera_label.setPixmap(QPixmap.fromImage(image))
+        
+    def update_dbg(self, image):
+        self.dbg_image_label.setPixmap(QPixmap.fromImage(image))
 
-    ######################################################################################
     def toggle_adaface(self):
         if self.adaface_button.isChecked():  # If button is checked
             self.start_adaface()  # Start adaface
@@ -84,7 +119,7 @@ class Myagv_Window(moiro_window, QMainWindow):
                 mes = f"Initialized with <b>{person_name}"
             else:
                 mes = show_warning_message(f'Target Value Uninitialized')
-            self.adaface_process = subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source ~/moiro_ws/install/setup.bash && {command}"], shell=False)
+            self.adaface_process = subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source ~/moiro_gui_ws/install/setup.bash && {command}"], shell=False)
             self.textBrowser_log.append(f" >>> {mes}")
             
             # GUI 차단되지 않고 프로세스 결과를 가져오기 위해 스레드 사용
@@ -98,12 +133,12 @@ class Myagv_Window(moiro_window, QMainWindow):
         
         
     def stop_adaface(self):
-        kill_pid = ['/home/minha/moiro_ws/install/adaface_ros/lib/adaface_ros/world_node',
-                    '/home/minha/moiro_ws/install/adaface_ros/lib/adaface_ros/face_recognition',
-                    '/home/minha/moiro_ws/install/yolov8_ros/lib/yolov8_ros/debug_node',
-                    '/home/minha/moiro_ws/install/yolov8_ros/lib/yolov8_ros/tracking_node',
-                    '/home/minha/moiro_ws/install/yolov8_ros/lib/yolov8_ros/yolov8_node',
-                    '/home/minha/moiro_ws/install/realsense2_camera/lib/realsense2_camera/realsense2_camera_node'
+        kill_pid = ['/home/minha/moiro_gui_ws/install/adaface_ros/lib/adaface_ros/world_node',
+                    '/home/minha/moiro_gui_ws/install/adaface_ros/lib/adaface_ros/face_recognition',
+                    '/home/minha/moiro_gui_ws/install/yolov8_ros/lib/yolov8_ros/debug_node',
+                    '/home/minha/moiro_gui_ws/install/yolov8_ros/lib/yolov8_ros/tracking_node',
+                    '/home/minha/moiro_gui_ws/install/yolov8_ros/lib/yolov8_ros/yolov8_node',
+                    '/home/minha/moiro_gui_ws/install/realsense2_camera/lib/realsense2_camera/realsense2_camera_node'
                     ]
         current_time = self.get_current_time()
         if self.adaface_process:
@@ -123,7 +158,7 @@ class Myagv_Window(moiro_window, QMainWindow):
                 if person_name:
                     mes += person_name
                     command = f"ros2 service call /vision/person_name moiro_interfaces/srv/Person \"{{person_name: {person_name}}}\""
-                    subprocess.Popen(['bash', '-c', f"source ~/moiro_ws/install/setup.bash && {command}"], shell=False)
+                    subprocess.Popen(['bash', '-c', f"source ~/moiro_gui_ws/install/setup.bash && {command}"], shell=False)
             else:
                 mes = show_error_message("push 'Start FR' button, then push 'reset' button")
             
@@ -133,6 +168,7 @@ class Myagv_Window(moiro_window, QMainWindow):
             with open("/home/ubuntu/error.log", "a") as f:
                 f.write(e)
             self.textBrowser_log.append(f"[{str(current_time)}] {mes}")
+    
     ######################################################################################
     def toggle_follower(self):
         if self.follower_button.isChecked():  # If button is checked
@@ -154,7 +190,7 @@ class Myagv_Window(moiro_window, QMainWindow):
             else:
                 command += f" min_depth:=100 max_depth:=150"
                 mes = show_warning_message(f'Target Depth must be integer! (default: 100 ~ 150 cm)')
-            self.follower_process = subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source ~/moiro_ws/install/setup.bash && {command}"], shell=False)
+            self.follower_process = subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source ~/moiro_gui_ws/install/setup.bash && {command}"], shell=False)
             self.textBrowser_log.append(f" >>> {mes}") 
 
         except Exception as e:
@@ -165,7 +201,7 @@ class Myagv_Window(moiro_window, QMainWindow):
         
         
     def stop_HF(self):
-        kill_pid = ['/home/minha/moiro_ws/install/adaface_ros/lib/adaface_ros/human_follower'
+        kill_pid = ["/home/minha/moiro_gui_ws/install/human_follower/lib/human_follower/human_follower"
                     ]
         current_time = self.get_current_time()
         if self.follower_process:
@@ -185,7 +221,7 @@ class Myagv_Window(moiro_window, QMainWindow):
                 if min_depth.isdigit() and max_depth.isdigit():
                     mes += f"{min_depth} cm ~ {max_depth} cm"
                     command = f"ros2 service call /vision/target_depth moiro_interfaces/srv/TargetDepth \"{{min_depth: {min_depth}}}\"{{max_depth: {max_depth}}}\""
-                    subprocess.Popen(['bash', '-c', f"source ~/moiro_ws/install/setup.bash && {command}"], shell=False)
+                    subprocess.Popen(['bash', '-c', f"source ~/moiro_gui_ws/install/setup.bash && {command}"], shell=False)
             else:
                 mes = show_error_message("push 'Start HF' button, then push 'reset' button")
             
@@ -198,7 +234,7 @@ class Myagv_Window(moiro_window, QMainWindow):
 
 
     def execute_in_terminal(self, command=""):
-        full_command = f"source ~/.bashrc && source ~/moiro_ws/install/setup.bash && {command}"
+        full_command = f"source ~/.bashrc && source ~/moiro_gui_ws/install/setup.bash && {command}"
         process = subprocess.Popen(['bash', '-c', full_command], shell=False)
         # process.wait()
 
@@ -220,8 +256,11 @@ def show_error_message(message):
 def show_warning_message(message):
     return f"<font style='color: yellow'><b>[Warning]</b> {message}</font>"
 
-if __name__ == '__main__':
+def main(args=None):
     app = QApplication(sys.argv)
     main_window = Myagv_Window()
     main_window.show()
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()

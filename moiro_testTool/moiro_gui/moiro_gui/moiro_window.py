@@ -15,13 +15,9 @@ from PyQt5.QtWidgets import QMainWindow, QLabel, QApplication
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1580, 1000)
+        MainWindow.resize(1600, 1400)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-
-        # 카메라 화면을 위한 QLabel 추가
-        self.camera_label = QLabel(self.centralwidget)
-        self.camera_label.setGeometry(QtCore.QRect(50, 50, 640, 480))
         
         # Set font
         self.font = QtGui.QFont()
@@ -29,6 +25,24 @@ class Ui_MainWindow(object):
         self.font.setPointSize(10)
         self.font.setBold(True)
         self.font.setWeight(75)
+
+        # 카메라 화면을 위한 QLabel 추가
+        self.camera_name = QtWidgets.QLabel(self.centralwidget)
+        self.camera_name.setGeometry(QtCore.QRect(50, 30, 100, 40))
+        self.camera_name.setFont(self.font)
+        self.camera_name.setObjectName("camera_name")
+
+        self.camera_label = QLabel(self.centralwidget)
+        self.camera_label.setGeometry(QtCore.QRect(50, 70, 600, 400))
+
+        # Dbg image label
+        self.dbg_name = QtWidgets.QLabel(self.centralwidget)
+        self.dbg_name.setGeometry(QtCore.QRect(50, 480, 150, 40))
+        self.dbg_name.setFont(self.font)
+        self.dbg_name.setObjectName("dbg_name")
+
+        self.dbg_image_label = QLabel(self.centralwidget)
+        self.dbg_image_label.setGeometry(QtCore.QRect(50, 520, 600, 400))
 
         ################
         # Adface start button
@@ -95,30 +109,30 @@ class Ui_MainWindow(object):
 
         # Target depth label
         self.depth_label = QtWidgets.QLabel(self.centralwidget)
-        self.depth_label.setGeometry(QtCore.QRect(1000, 120, 100, 40))
+        self.depth_label.setGeometry(QtCore.QRect(1000, 130, 100, 40))
         self.depth_label.setFont(self.font)
         self.depth_label.setObjectName("depth_label")
         
         self.depth_min_label = QtWidgets.QLabel(self.centralwidget)
-        self.depth_min_label.setGeometry(QtCore.QRect(1000, 140, 100, 40))
+        self.depth_min_label.setGeometry(QtCore.QRect(1000, 150, 100, 40))
         self.font.setBold(False)
         self.font.setWeight(50)
         self.depth_min_label.setFont(self.font)
         self.depth_min_label.setObjectName("depth_min_label")
 
         self.depth_max_label = QtWidgets.QLabel(self.centralwidget)
-        self.depth_max_label.setGeometry(QtCore.QRect(1170, 140, 100, 40))
+        self.depth_max_label.setGeometry(QtCore.QRect(1170, 150, 100, 40))
         self.depth_max_label.setFont(self.font)
         self.depth_max_label.setObjectName("depth_max_label")
 
         # Depth select input
         self.depth_min_input = QtWidgets.QLineEdit(self.centralwidget)
-        self.depth_min_input.setGeometry(QtCore.QRect(1000, 170, 150, 40))
+        self.depth_min_input.setGeometry(QtCore.QRect(1000, 180, 150, 40))
         self.depth_min_input.setFont(self.font)
         self.depth_min_input.setObjectName("depth_min_input")
 
         self.depth_max_input = QtWidgets.QLineEdit(self.centralwidget)
-        self.depth_max_input.setGeometry(QtCore.QRect(1170, 170, 150, 40))
+        self.depth_max_input.setGeometry(QtCore.QRect(1170, 180, 150, 40))
         self.depth_max_input.setFont(self.font)
         self.depth_max_input.setObjectName("depth_max_input")
 
@@ -127,7 +141,7 @@ class Ui_MainWindow(object):
         # Log label
         self.label_log = QtWidgets.QLabel(self.centralwidget)
         # self.label_log.setGeometry(QtCore.QRect(30, 110, 91, 31))
-        self.label_log.setGeometry(QtCore.QRect(740, 230, 91, 31))
+        self.label_log.setGeometry(QtCore.QRect(740, 240, 91, 31))
         self.font.setBold(False)
         self.font.setWeight(50)
         self.label_log.setFont(self.font)
@@ -136,19 +150,19 @@ class Ui_MainWindow(object):
         # Log textBrowser
         self.textBrowser_log = QtWidgets.QTextBrowser(self.centralwidget)
         # self.textBrowser_log.setGeometry(QtCore.QRect(30, 180, 741, 56))
-        self.textBrowser_log.setGeometry(QtCore.QRect(740, 270, 810, 80))
+        self.textBrowser_log.setGeometry(QtCore.QRect(740, 270, 810, 200))
         self.textBrowser_log.setObjectName("textBrowser_log")
         ################
         # Debugger label
         self.label_debugger = QtWidgets.QLabel(self.centralwidget)
         # self.label_debugger.setGeometry(QtCore.QRect(30, 200, 91, 31))
-        self.label_debugger.setGeometry(QtCore.QRect(740, 350, 91, 31))
+        self.label_debugger.setGeometry(QtCore.QRect(740, 480, 91, 31))
         self.label_debugger.setFont(self.font)
         self.label_debugger.setObjectName("label_debugger")
 
         # Debugger textBrowser
         self.textBrowser_debugger = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser_debugger.setGeometry(QtCore.QRect(740, 400, 810, 281))
+        self.textBrowser_debugger.setGeometry(QtCore.QRect(740, 520, 810, 400))
         self.textBrowser_debugger.setObjectName("textBrowser_debugger")
         ################
         # Set central widget
@@ -169,6 +183,9 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+
+        self.camera_name.setText(_translate("MainWindow", "촬영 카메라"))
+        self.dbg_name.setText(_translate("MainWindow", "Debugging image"))
 
         self.adaface_button.setText(_translate("MainWindow", "Start FR"))
         self.follower_button.setText(_translate("MainWindow", "Start HF"))
