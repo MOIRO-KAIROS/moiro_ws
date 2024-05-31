@@ -9,24 +9,20 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QApplication
+from PyQt5.QtWidgets import QMainWindow, QLabel, QApplication
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1600, 1000)
+        MainWindow.resize(1580, 1000)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        # 레이아웃 설정
-        self.layout = QVBoxLayout()
-        self.centralwidget.setLayout(self.layout)
-
         # 카메라 화면을 위한 QLabel 추가
         self.camera_label = QLabel(self.centralwidget)
-        self.layout.addWidget(self.camera_label)
-
+        self.camera_label.setGeometry(QtCore.QRect(50, 50, 640, 480))
+        
         # Set font
         self.font = QtGui.QFont()
         self.font.setFamily("Arial")
@@ -34,27 +30,60 @@ class Ui_MainWindow(object):
         self.font.setBold(True)
         self.font.setWeight(75)
 
+        ################
         # Adface start button
         self.adaface_button = QtWidgets.QPushButton(self.centralwidget)
-        self.adaface_button.setGeometry(QtCore.QRect(30, 50, 211, 41))
+        self.adaface_button.setGeometry(QtCore.QRect(740, 50, 200, 80))
         self.adaface_button.setFont(self.font)
         self.adaface_button.setStyleSheet("QPushButton:pressed{\n"
                                           "   background-color:#c7c7d0;\n"
                                           "}\n"
                                           "")
         self.adaface_button.setObjectName("adaface_button")
-        self.layout.addWidget(self.adaface_button)
 
+        # Human follower button
+        self.follower_button = QtWidgets.QPushButton(self.centralwidget)
+        self.follower_button.setGeometry(QtCore.QRect(740, 150, 200, 80))
+        self.follower_button.setFont(self.font)
+        self.follower_button.setStyleSheet("QPushButton:pressed{\n"
+                                         "   background-color:#c7c7d0;\n"
+                                         "}\n"
+                                         "")
+        self.follower_button.setObjectName("follower_button")
+
+         ################
+        # Adface reset button
+        self.reset_fr = QtWidgets.QPushButton(self.centralwidget)
+        self.reset_fr.setGeometry(QtCore.QRect(1350, 50, 200, 80))
+        self.reset_fr.setFont(self.font)
+        self.reset_fr.setStyleSheet("QPushButton:pressed{\n"
+                                          "   background-color:#c7c7d0;\n"
+                                          "}\n"
+                                          "")
+        self.reset_fr.setObjectName("reset_fr")
+
+        # Human follower reset button
+        self.reset_hf = QtWidgets.QPushButton(self.centralwidget)
+        self.reset_hf.setGeometry(QtCore.QRect(1350, 150, 200, 80))
+        self.reset_hf.setFont(self.font)
+        self.reset_hf.setStyleSheet("QPushButton:pressed{\n"
+                                         "   background-color:#c7c7d0;\n"
+                                         "}\n"
+                                         "")
+        self.reset_hf.setObjectName("reset_hf")
+
+        ################
         # Target person label
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(30, 10, 211, 41))
+        # self.label.setGeometry(QtCore.QRect(30, 60, 100, 41))
+        self.label.setGeometry(QtCore.QRect(1000, 40, 100, 40))
         self.label.setFont(self.font)
         self.label.setObjectName("label")
-        self.layout.addWidget(self.label)
 
         # Person select comboBox
         self.person_comboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.person_comboBox.setGeometry(QtCore.QRect(270, 50, 171, 41))
+        # self.person_comboBox.setGeometry(QtCore.QRect(270, 50, 100, 41))
+        self.person_comboBox.setGeometry(QtCore.QRect(1000, 80, 300, 40))
         self.person_comboBox.setFont(self.font)
         self.person_comboBox.setObjectName("person_comboBox")
         self.person_comboBox.addItem("")
@@ -62,47 +91,66 @@ class Ui_MainWindow(object):
         self.person_comboBox.addItem("")
         self.person_comboBox.addItem("")
         self.person_comboBox.addItem("")
-        self.layout.addWidget(self.person_comboBox)
+        ################
 
-        # Person reset button
-        self.person_button = QtWidgets.QPushButton(self.centralwidget)
-        self.person_button.setGeometry(QtCore.QRect(450, 50, 101, 41))
-        self.person_button.setFont(self.font)
-        self.person_button.setStyleSheet("QPushButton:pressed{\n"
-                                         "   background-color:#c7c7d0;\n"
-                                         "}\n"
-                                         "")
-        self.person_button.setObjectName("person_button")
-        self.layout.addWidget(self.person_button)
+        # Target depth label
+        self.depth_label = QtWidgets.QLabel(self.centralwidget)
+        self.depth_label.setGeometry(QtCore.QRect(1000, 120, 100, 40))
+        self.depth_label.setFont(self.font)
+        self.depth_label.setObjectName("depth_label")
+        
+        self.depth_min_label = QtWidgets.QLabel(self.centralwidget)
+        self.depth_min_label.setGeometry(QtCore.QRect(1000, 140, 100, 40))
+        self.font.setBold(False)
+        self.font.setWeight(50)
+        self.depth_min_label.setFont(self.font)
+        self.depth_min_label.setObjectName("depth_min_label")
+
+        self.depth_max_label = QtWidgets.QLabel(self.centralwidget)
+        self.depth_max_label.setGeometry(QtCore.QRect(1170, 140, 100, 40))
+        self.depth_max_label.setFont(self.font)
+        self.depth_max_label.setObjectName("depth_max_label")
+
+        # Depth select input
+        self.depth_min_input = QtWidgets.QLineEdit(self.centralwidget)
+        self.depth_min_input.setGeometry(QtCore.QRect(1000, 170, 150, 40))
+        self.depth_min_input.setFont(self.font)
+        self.depth_min_input.setObjectName("depth_min_input")
+
+        self.depth_max_input = QtWidgets.QLineEdit(self.centralwidget)
+        self.depth_max_input.setGeometry(QtCore.QRect(1170, 170, 150, 40))
+        self.depth_max_input.setFont(self.font)
+        self.depth_max_input.setObjectName("depth_max_input")
+
+        ################
 
         # Log label
         self.label_log = QtWidgets.QLabel(self.centralwidget)
-        self.label_log.setGeometry(QtCore.QRect(30, 110, 91, 31))
+        # self.label_log.setGeometry(QtCore.QRect(30, 110, 91, 31))
+        self.label_log.setGeometry(QtCore.QRect(740, 230, 91, 31))
         self.font.setBold(False)
         self.font.setWeight(50)
         self.label_log.setFont(self.font)
         self.label_log.setObjectName("label_log")
-        self.layout.addWidget(self.label_log)
 
         # Log textBrowser
         self.textBrowser_log = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser_log.setGeometry(QtCore.QRect(30, 140, 741, 56))
+        # self.textBrowser_log.setGeometry(QtCore.QRect(30, 180, 741, 56))
+        self.textBrowser_log.setGeometry(QtCore.QRect(740, 270, 810, 80))
         self.textBrowser_log.setObjectName("textBrowser_log")
-        self.layout.addWidget(self.textBrowser_log)
-
+        ################
         # Debugger label
         self.label_debugger = QtWidgets.QLabel(self.centralwidget)
-        self.label_debugger.setGeometry(QtCore.QRect(30, 200, 91, 31))
+        # self.label_debugger.setGeometry(QtCore.QRect(30, 200, 91, 31))
+        self.label_debugger.setGeometry(QtCore.QRect(740, 350, 91, 31))
         self.label_debugger.setFont(self.font)
         self.label_debugger.setObjectName("label_debugger")
-        self.layout.addWidget(self.label_debugger)
 
         # Debugger textBrowser
         self.textBrowser_debugger = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser_debugger.setGeometry(QtCore.QRect(30, 240, 741, 281))
+        self.textBrowser_debugger.setGeometry(QtCore.QRect(740, 400, 810, 281))
         self.textBrowser_debugger.setObjectName("textBrowser_debugger")
-        self.layout.addWidget(self.textBrowser_debugger)
-
+        ################
         # Set central widget
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -123,15 +171,22 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
         self.adaface_button.setText(_translate("MainWindow", "Start FR"))
+        self.follower_button.setText(_translate("MainWindow", "Start HF"))
+
         self.label.setText(_translate("MainWindow", "Target Person"))
+        self.depth_label.setText(_translate("MainWindow", "Target Depth"))
+        self.depth_max_label.setText(_translate("MainWindow", "Max"))
+        self.depth_min_label.setText(_translate("MainWindow", "Min"))
 
         self.person_comboBox.setItemText(0, _translate("MainWindow", ""))
-        self.person_comboBox.setItemText(1, _translate("MainWindow", "Person 1"))
-        self.person_comboBox.setItemText(2, _translate("MainWindow", "Person 2"))
+        self.person_comboBox.setItemText(1, _translate("MainWindow", "minha"))
+        self.person_comboBox.setItemText(2, _translate("MainWindow", "yeonju"))
         self.person_comboBox.setItemText(3, _translate("MainWindow", "-"))
         self.person_comboBox.setItemText(4, _translate("MainWindow", "-"))
 
-        self.person_button.setText(_translate("MainWindow", "Reset"))
+        self.reset_fr.setText(_translate("MainWindow", "RESET FR"))
+        self.reset_hf.setText(_translate("MainWindow", "RESET HF"))
+
         self.label_log.setText(_translate("MainWindow", "Log: "))
         self.label_debugger.setText(_translate("MainWindow", "Debug: "))
 
