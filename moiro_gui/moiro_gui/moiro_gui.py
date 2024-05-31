@@ -12,6 +12,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 import cv2
+
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
@@ -87,7 +88,7 @@ class Myagv_Window(moiro_window, QMainWindow):
         self.image_listener_thread.start()
         
         # self.paths example : /home/minha/moiro_gui_ws/install/
-        self.paths = os.path.dirname(os.path.dirname(os.path.dirname(get_package_share_directory('adaface_ros'))))
+        self.paths = os.path.abspath(os.path.join(get_package_share_directory('adaface_ros'), "../../../"))
 
     def closeEvent(self, event):
         self.camera_thread.terminate()
@@ -177,17 +178,17 @@ class Myagv_Window(moiro_window, QMainWindow):
     def start_HF(self):
         current_time = self.get_current_time()
         command = f"ros2 run human_follower human_follower "
-        mes = 'Start Human follower..... '
+        mes = 'Start Human follower! '
         self.textBrowser_log.append(f"[{str(current_time)}] {mes}")
         try:
             min_depth = self.depth_min_input.text()
             max_depth = self.depth_max_input.text()
             if min_depth.isdigit() and max_depth.isdigit():
                 command += f" min_depth:={min_depth} max_depth:={max_depth}"
-                mes += f"{min_depth} cm ~ {max_depth} cm"
+                mes += f"[ <b>{min_depth} cm ~ {max_depth} cm</b> ]"
             else:
                 command += f" min_depth:=100 max_depth:=150"
-                mes = show_warning_message(f'Target Depth must be integer! (default: 100 ~ 150 cm)')
+                mes = show_warning_message(f'Target Depth must be integer! (default: <b>100 ~ 150 cm</b>)')
             self.follower_process = subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {self.paths}/setup.bash && {command}"], shell=False)
             self.textBrowser_log.append(f" >>> {mes}") 
 
@@ -251,7 +252,7 @@ def show_error_message(message):
     return f"<font style='color: red'><b>[Error]</b> {message}</font>"
 
 def show_warning_message(message):
-    return f"<font style='color: yellow'><b>[Warning]</b> {message}</font>"
+    return f"<font style='color: Orange'><b>[Warning]</b> {message}</font>"
 
 def main(args=None):
     app = QApplication(sys.argv)

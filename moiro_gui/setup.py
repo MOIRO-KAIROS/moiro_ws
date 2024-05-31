@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-          'moiro_gui = moiro_gui.moiro_gui:main',
+          'moiro_gui_simple = moiro_gui.moiro_gui:main',
+          'moiro_gui_debug = moiro_gui.debug_gui:main',
         ],
     },
 )
