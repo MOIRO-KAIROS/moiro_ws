@@ -46,10 +46,15 @@ class ImageListenerThread(QThread):
 class CameraThread(QThread):
     change_pixmap_signal = pyqtSignal(QImage)
 
+    def __init__(self, device=0):
+        super().__init__()
+        self.device = device
+        self._running = True # 창 종료 시, CameraThread 종료
+
     def run(self):
         # Set the camera device number
-        self.capture = cv2.VideoCapture('/dev/video0')
-        while True:
+        self.capture = cv2.VideoCapture(self.device)
+        while self._running:
             ret, frame = self.capture.read()
             if ret:
                 rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -58,6 +63,11 @@ class CameraThread(QThread):
                 convert_to_qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
                 p = convert_to_qt_format.scaled(640, 480, Qt.KeepAspectRatio)
                 self.change_pixmap_signal.emit(p)
+        self.capture.release()
+
+    def stop(self):
+        self._running = False
+        self.wait()
 
 class Myagv_Window(moiro_window, QMainWindow):
     def __init__(self):
@@ -91,7 +101,7 @@ class Myagv_Window(moiro_window, QMainWindow):
         self.paths = os.path.abspath(os.path.join(get_package_share_directory('adaface_ros'), "../../../"))
 
     def closeEvent(self, event):
-        self.camera_thread.terminate()
+        self.camera_thread.stop()
         self.image_listener_thread.stop()
         event.accept()
 
@@ -254,11 +264,8 @@ def show_error_message(message):
 def show_warning_message(message):
     return f"<font style='color: Orange'><b>[Warning]</b> {message}</font>"
 
-def main(args=None):
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     main_window = Myagv_Window()
     main_window.show()
     sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main()
