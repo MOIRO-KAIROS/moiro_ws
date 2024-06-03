@@ -33,6 +33,15 @@ git submodule update --init --recursive
 
 #### (2) ```embed``` 폴더 생성 후, features.pt & ids.pt 생성
 - 생성 방법: [moiro_vision](https://github.com/MOIRO-KAIROS/moiro_vision) 레포지토리로 이동
+```
+  moiro_vision
+  └── adaface_ros
+      └── adaface_ros
+          └── script
+              └── store_embedding.py
+              └── face_dataset
+```
+  - face_dataset에 원하는 사람의 이미지를 넣고, store_embedding.py 구동
   
 #### (3) 파일 구조 (pretrained와 embed 폴더 생성)
   ```
@@ -66,11 +75,18 @@ colcon build
 #### (1) Terminal로 실행하는 방법
 ```sh
 source ~/moiro_ws/install/setup.bash
-ros2 launch adaface_ros adaface.launch.py person_name:=yeonju
+ros2 launch adaface_ros adaface.launch.py person_name:={$PERSON_NAME}
 ```
 
 #### (2) GUI로 실행하는 방법
+##### 1) droidcam install
+- 참고하여서 설치 : https://www.youtube.com/watch?v=anUmPoF6eJY
+```
+cd /tmp
+droidcam
+```
+##### 2) Terminal 입력
 ```sh
 // pip install pyqt5==5.13
-python3 moiro_testTool/main.py
+ros2 run moiro_gui moiro_gui_simple
 ```
