@@ -24,15 +24,16 @@ class ImageListenerThread(QThread):
         super().__init__()
         rclpy.init()
         self.node = rclpy.create_node('image_listener')
-        self.subscription = self.node.create_subscription(Image, '/camera1/image_raw', self.listener_callback, 10)
+        self.subscription = self.node.create_subscription(Image, '/vision/dbg_image', self.listener_callback, 10)
         # self.subscription = self.node.create_subscription(Image, '/vision/dbg_image', self.listener_callback, 10)
         self.bridge = CvBridge()
 
     def listener_callback(self, msg):
         cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        height, width, channel = cv_image.shape
+        resized_image = cv2.resize(cv_image, (480, 320))
+        height, width, channel = resized_image.shape
         bytes_per_line = 3 * width
-        q_image = QImage(cv_image.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
+        q_image = QImage(resized_image.data, width, height, bytes_per_line, QImage.Format_RGB888).rgbSwapped()
         self.change_pixmap_signal.emit(q_image)
 
     def run(self):
@@ -61,7 +62,7 @@ class CameraThread(QThread):
                 h, w, ch = rgb_image.shape
                 bytes_per_line = ch * w
                 convert_to_qt_format = QImage(rgb_image.data, w, h, bytes_per_line, QImage.Format_RGB888)
-                p = convert_to_qt_format.scaled(640, 480, Qt.KeepAspectRatio)
+                p = convert_to_qt_format.scaled(480, 320, Qt.KeepAspectRatio)
                 self.change_pixmap_signal.emit(p)
         self.capture.release()
 
@@ -264,7 +265,7 @@ def show_error_message(message):
 def show_warning_message(message):
     return f"<font style='color: Orange'><b>[Warning]</b> {message}</font>"
 
-if __name__ == '__main__':
+def main(args=None):
     app = QApplication(sys.argv)
     main_window = Myagv_Window()
     main_window.show()

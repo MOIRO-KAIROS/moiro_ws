@@ -25,7 +25,7 @@ class ImageListenerThread(QThread):
         super().__init__()
         rclpy.init()
         self.node = rclpy.create_node('image_listener')
-        self.subscription = self.node.create_subscription(Image, '/camera1/image_raw', self.listener_callback, 10)
+        self.subscription = self.node.create_subscription(Image, '/vision/dbg_image', self.listener_callback, 10)
         # self.subscription = self.node.create_subscription(Image, '/vision/dbg_image', self.listener_callback, 10)
         self.bridge = CvBridge()
 
@@ -313,7 +313,7 @@ def show_error_message(message):
 def show_warning_message(message):
     return f"<font style='color: Orange'><b>[Warning]</b> {message}</font>"
 
-if __name__ == '__main__':
+def main(args=None):
     app = QApplication(sys.argv)
     main_window = Myagv_Window()
     main_window.show()
