@@ -11,6 +11,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QLabel, QApplication
+import torch
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -151,15 +152,6 @@ class Ui_MainWindow(object):
         # # Set central widget
         MainWindow.setCentralWidget(self.centralwidget)
 
-        # self.menubar = QtWidgets.QMenuBar(MainWindow)
-        # self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 28))
-        # self.menubar.setObjectName("menubar")
-        # MainWindow.setMenuBar(self.menubar)
-
-        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        # self.statusbar.setObjectName("statusbar")
-        # MainWindow.setStatusBar(self.statusbar)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -179,11 +171,10 @@ class Ui_MainWindow(object):
         self.depth_min_label.setText(_translate("MainWindow", "Min"))
 
         parent_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(get_package_share_directory('moiro_gui')))))
-
-        files = os.listdir(os.path.join(parent_path +'/src/moiro_vision/adaface_ros/adaface_ros/script/face_dataset/test'))
+        fnames = torch.load(os.path.join(parent_path +'/src/moiro_vision/adaface_ros/adaface_ros/script/embed/ids.pt'))
         self.person_comboBox.clear()  # 기존 아이템 초기화
-        for file_name in files:
-            self.person_comboBox.addItem(file_name.split('.')[0])
+        for file_name in fnames:
+            self.person_comboBox.addItem(file_name)
 
         self.reset_fr.setText(_translate("MainWindow", "RESET FR"))
         self.reset_hf.setText(_translate("MainWindow", "RESET HF"))
