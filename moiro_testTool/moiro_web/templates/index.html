@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel</title>
+    <style>
+        #video {
+            width: 640px;
+            height: 480px;
+            border: 1px solid black;
+        }
+        #controls {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 20px;
+        }
+        .button-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="video">
+        <img src="{{ url_for('video_feed') }}" width="640" height="480">
+    </div>
+    <div id="controls">
+        <div class="button-group">
+            <h3>Streaming Camera</h3>
+            <input type="text" id="cam_ip" placeholder="Camera IP">
+            <input type="text" id="cam_port" placeholder="Camera Port">
+            <button id="camera-toggle-button" onclick="toggleCameraStream()">Connect Camera</button>
+        </div>
+        <div class="button-group">
+            <h3>COM1 Controls</h3>
+            <input type="text" id="com1_ip" placeholder="COM1 IP">
+            <input type="text" id="com1_port" placeholder="COM1 Port">
+            <button onclick="startAdaface()">Start Adaface</button>
+        </div>
+        <div class="button-group">
+            <h3>COM2 Controls</h3>
+            <input type="text" id="com2_ip" placeholder="COM2 IP">
+            <input type="text" id="com2_port" placeholder="COM2 Port">
+            <button onclick="startFollower()">Start Follower</button>
+        </div>
+    </div>
+
+    <script>
+        let cameraStreaming = false;
+
+        function toggleCameraStream() {
+            const cam_ip = document.getElementById('cam_ip').value;
+            const cam_port = document.getElementById('cam_port').value;
+            const button = document.getElementById('camera-toggle-button');
+            
+            if (cameraStreaming) {
+                // Stop the camera stream
+                fetch('/stop_camera', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    button.textContent = 'Connect Camera';
+                    cameraStreaming = false;
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                // Start the camera stream
+                fetch('/start_camera', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `cam_ip=${cam_ip}&cam_port=${cam_port}`
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    button.textContent = 'Disconnect Camera';
+                    cameraStreaming = true;
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+
+        function startAdaface() {
+            const com1_ip = document.getElementById('com1_ip').value;
+            const com1_port = document.getElementById('com1_port').value;
+            
+            fetch('/start_adaface', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `com1_ip=${com1_ip}&com1_port=${com1_port}`
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+        }
+
+        function startFollower() {
+            const com2_ip = document.getElementById('com2_ip').value;
+            const com2_port = document.getElementById('com2_port').value;
+            
+            fetch('/start_follower', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `com2_ip=${com2_ip}&com2_port=${com2_port}`
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
