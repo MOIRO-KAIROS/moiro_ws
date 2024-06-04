@@ -36,7 +36,12 @@
             <h3>COM1 Controls
             <input type="text" id="com1_ip" placeholder="COM1 IP">
             <input type="text" id="com1_port" placeholder="COM1 Port"></input>
-            <input type="text" id="person_name" placeholder="Person name">
+            <select id="file_select" onchange="loadNames()">
+                <option value="">Select File</option>
+            </select>
+            <select id="person_name">
+                <option value="">Select Person</option>
+            </select>
             <button onclick="handleCOM1('start_adaface')">Start Adaface</button>
             <button onclick="handleCOM1('reset_name')">Reset Name</button>
         </div>
@@ -53,7 +58,52 @@
     </div>
 
     <script>
+        
         let cameraStreaming = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFileList();
+        });
+
+        function loadFileList() {
+            fetch('/get_file_list')
+            .then(response => response.json())
+            .then(files => {
+                const fileSelect = document.getElementById('file_select');
+                files.forEach(file => {
+                    let option = document.createElement('option');
+                    option.value = file;
+                    option.textContent = file;
+                    fileSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function loadNames() {
+            const filename = document.getElementById('file_select').value;
+            if (filename) {
+                fetch('/get_names_from_file', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `filename=${filename}`
+                })
+                .then(response => response.json())
+                .then(names => {
+                    const nameSelect = document.getElementById('person_name');
+                    nameSelect.innerHTML = '<option value="">Select Person</option>';
+                    names.forEach(name => {
+                        let option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = name;
+                        nameSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
 
         function toggleCameraStream() {
             const cam_ip = document.getElementById('cam_ip').value;

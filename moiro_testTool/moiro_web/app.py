@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, Response
-import requests
+from flask import Flask, render_template, request, Response, jsonify
+import requests, os
 from utils import CameraStream, kill_terminal
+from ament_index_python.packages import get_package_share_directory
 
 app = Flask(__name__)
 
 camera_stream = None
+embed_path = os.path.join(os.path.dirname(__file__), 'embed') # os.path.dirname(__file__) = moiro_testTool/moiro_web
 
 def gen_frames():
     global camera_stream
@@ -19,6 +21,23 @@ def gen_frames():
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         except Exception as e:
             print(f"Error: {e}")
+
+@app.route('/get_file_list', methods=['GET'])
+def get_file_list():
+    dir_list = sorted(os.listdir(embed_path))
+    dir_list = [os.path.splitext(f)[0] for f in dir_list]
+
+    return jsonify(dir_list)
+
+@app.route('/get_names_from_file', methods=['POST'])
+def get_names_from_file():
+    filename = os.path.join(embed_path, f"{request.form['filename']}.txt")
+    # print(filename)
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            names = [line.strip() for line in file.readlines()]
+        return jsonify(names)
+    return jsonify([])
 
 @app.route('/')
 def index():

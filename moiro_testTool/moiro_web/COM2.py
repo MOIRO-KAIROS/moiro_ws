@@ -28,7 +28,7 @@ def reset_depth():
     command = f"ros2 service call /vision/target_depth moiro_interfaces/srv/TargetDepth \"{{min_depth: {min_depth}}}\"{{max_depth: {max_depth}}}\""
     subprocess.Popen(['bash', '-c', f"source {human_follower_path}/setup.bash && {command}"], shell=False)
     
-    return f'Depth reset as <b>{min_depth} ~ {max_depth} cm</b>'
+    return f'Depth reset as {min_depth} ~ {max_depth} cm'
 
 @app.route('/mycobot', methods=['POST'])
 def mycobot():

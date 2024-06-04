@@ -30,7 +30,7 @@ def reset_name():
     command = f"ros2 service call /vision/person_name moiro_interfaces/srv/Person \"{{person_name: {person_name}}}\""
     subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {adaface_ros_path}/setup.bash && {command}"], shell=False)
     
-    return f'Person name reset as <b>{person_name}</b>'
+    return f'Person name reset as {person_name}'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
