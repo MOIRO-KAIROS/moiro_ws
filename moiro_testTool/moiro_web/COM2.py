@@ -2,6 +2,7 @@ from flask import Flask, request
 import subprocess
 import os
 from ament_index_python.packages import get_package_share_directory
+from utils import kill_terminal
 
 app = Flask(__name__)
 
@@ -11,6 +12,7 @@ mycobot_path = os.path.abspath(os.path.join(get_package_share_directory('mycobot
 
 @app.route('/start_follower', methods=['POST'])
 def start_follower():
+    kill_terminal('human_follower')
     min_depth = request.json[0]
     max_depth = request.json[1]
     print(min_depth,max_depth)
@@ -30,6 +32,7 @@ def reset_depth():
 
 @app.route('/mycobot', methods=['POST'])
 def mycobot():
+    # kill_terminal('mycobot_movegroup')
     # command = f"ros2 launch mycobot_movegroup mycobot_movegroup._service_class_interface.launch.py"
     # subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {mycobot_path}/setup.bash && {command}"], shell=False)
     print('I DONT KNOW HOW TO RUN MYCOBOT')

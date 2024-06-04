@@ -2,6 +2,7 @@ from flask import Flask, request
 import subprocess
 import os
 from ament_index_python.packages import get_package_share_directory
+from utils import kill_terminal
 
 app = Flask(__name__)
 
@@ -10,6 +11,7 @@ adaface_ros_path = os.path.abspath(os.path.join(get_package_share_directory('ada
 
 @app.route('/start_adaface', methods=['POST'])
 def start_adaface():
+    kill_terminal('adaface_ros')
     person_name = request.data.decode('utf-8')
     if not person_name:
         return 'Person name is required', 400
