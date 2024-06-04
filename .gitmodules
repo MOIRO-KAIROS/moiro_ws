@@ -13,3 +13,6 @@
 [submodule "src/moiro_agv"]
 	path = src/moiro_agv
 	url = https://github.com/MOIRO-KAIROS/moiro_agv.git
+[submodule "src/moiro_arm"]
+	path = src/moiro_arm
+	url = https://github.com/MOIRO-KAIROS/moiro_arm.git
