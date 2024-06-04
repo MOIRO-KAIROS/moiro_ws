@@ -12,7 +12,7 @@ mycobot_path = os.path.abspath(os.path.join(get_package_share_directory('mycobot
 
 @app.route('/start_follower', methods=['POST'])
 def start_follower():
-    kill_terminal('human_follower')
+    kill_terminal(os.path.join(human_follower_path, 'human_follower/lib/human_follower'))
     min_depth = request.json[0]
     max_depth = request.json[1]
     print(min_depth,max_depth)

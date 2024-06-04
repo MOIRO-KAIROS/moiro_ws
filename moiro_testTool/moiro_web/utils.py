@@ -10,8 +10,8 @@ def kill_terminal(pname): # subprocess.Popen("ps aux | grep droidcam | grep -v g
     pids = stdout.decode('utf-8').strip().split()
     if pids:
         kill_command = f"kill -9 {' '.join(pids)    }"
-        subprocess.Popen(kill_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-        # process.wait()
+        process = subprocess.Popen(kill_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        process.wait()
 
 class CameraStream:
     def __init__(self, cam_ip, cam_port):

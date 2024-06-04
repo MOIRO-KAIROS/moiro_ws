@@ -8,15 +8,16 @@ app = Flask(__name__)
 
 # adaface_ros 패키지의 경로 설정
 adaface_ros_path = os.path.abspath(os.path.join(get_package_share_directory('adaface_ros'), "../../../"))
-
 @app.route('/start_adaface', methods=['POST'])
 def start_adaface():
-    kill_terminal('adaface_ros')
+    kill_terminal(os.path.join(adaface_ros_path, 'adaface_ros/lib/adaface_ros'))
+    kill_terminal(os.path.join(adaface_ros_path, 'yolov8_ros/lib/yolov8_ros'))
+    kill_terminal(os.path.join(adaface_ros_path, 'realsense2_camera/lib/realsense2_camera'))
     person_name = request.data.decode('utf-8')
     if not person_name:
         return 'Person name is required', 400
     
-    command = f"ros2 launch adaface_ros adaface.launch.py --person_name:={person_name}"
+    command = f"ros2 launch adaface_ros adaface.launch.py person_name:={person_name}"
     subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {adaface_ros_path}/setup.bash && {command}"], shell=False)
     return 'Adaface started on COM1'
 
