@@ -16,3 +16,6 @@
 [submodule "src/moiro_arm"]
 	path = src/moiro_arm
 	url = https://github.com/MOIRO-KAIROS/moiro_arm.git
+[submodule "src/moiro_bringup"]
+	path = src/moiro_bringup
+	url = https://github.com/MOIRO-KAIROS/moiro_bringup.git
