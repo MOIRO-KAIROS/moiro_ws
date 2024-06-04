@@ -49,21 +49,50 @@ def stop_camera():
         kill_terminal("droidcam")
         return 'Camera stream stopped'
     return 'No camera stream to stop'
-
+###
 @app.route('/start_adaface', methods=['POST'])
 def start_adaface():
     com1_ip = request.form['com1_ip']
     com1_port = request.form['com1_port']
+    person_name = request.form['person_name']
     
-    response = requests.post(f'http://{com1_ip}:{com1_port}/start_adaface')
+    response = requests.post(f'http://{com1_ip}:{com1_port}/start_adaface',person_name)
     return response.text
 
+@app.route('/reset_name', methods=['POST'])
+def reset_name():
+    com1_ip = request.form['com1_ip']
+    com1_port = request.form['com1_port']
+    person_name = request.form['person_name']
+    
+    response = requests.post(f'http://{com1_ip}:{com1_port}/reset_name',person_name)
+    return response.text
+###
 @app.route('/start_follower', methods=['POST'])
 def start_follower():
     com2_ip = request.form['com2_ip']
     com2_port = request.form['com2_port']
+    min_depth = request.form['min_depth']
+    max_depth = request.form['max_depth']
     
-    response = requests.post(f'http://{com2_ip}:{com2_port}/start_follower')
+    response = requests.post(f'http://{com2_ip}:{com2_port}/start_follower',json=[min_depth, max_depth])
+    return response.text
+@app.route('/reset_depth', methods=['POST'])
+def reset_depth():
+    com2_ip = request.form['com2_ip']
+    com2_port = request.form['com2_port']
+    min_depth = request.form['min_depth']
+    max_depth = request.form['max_depth']
+    
+    response = requests.post(f'http://{com2_ip}:{com2_port}/reset_depth',json=[min_depth, max_depth])
+    return response.text
+
+@app.route('/mycobot', methods=['POST'])
+def mycobot():
+    com2_ip = request.form['com2_ip']
+    com2_port = request.form['com2_port']
+    
+    response = requests.post(f'http://{com2_ip}:{com2_port}/mycobot')
     return response.text
 
 if __name__ == '__main__':

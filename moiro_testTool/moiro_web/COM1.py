@@ -1,16 +1,33 @@
-from flask import Flask
+from flask import Flask, request
 import subprocess
+import os
+from ament_index_python.packages import get_package_share_directory
 
 app = Flask(__name__)
 
+# adaface_ros 패키지의 경로 설정
+adaface_ros_path = os.path.abspath(os.path.join(get_package_share_directory('adaface_ros'), "../../../"))
+
 @app.route('/start_adaface', methods=['POST'])
 def start_adaface():
-    # 여기에서 adaface 명령어를 실행
-    print("Success")
-    # command = "ros2 launch adaface_ros adaface.launch.py"
-    # subprocess.Popen(['bash', '-c', command])
+    person_name = request.data.decode('utf-8')
+    if not person_name:
+        return 'Person name is required', 400
     
+    command = f"ros2 launch adaface_ros adaface.launch.py --person_name:={person_name}"
+    subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {adaface_ros_path}/setup.bash && {command}"], shell=False)
     return 'Adaface started on COM1'
+
+@app.route('/reset_name', methods=['POST'])
+def reset_name():
+    person_name = request.data.decode('utf-8')
+    if not person_name:
+        return 'Person name is required', 400
+    
+    command = f"ros2 service call /vision/person_name moiro_interfaces/srv/Person \"{{person_name: {person_name}}}\""
+    subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {adaface_ros_path}/setup.bash && {command}"], shell=False)
+    
+    return f'Person name reset as <b>{person_name}</b>'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -27,22 +27,28 @@
     </div>
     <div id="controls">
         <div class="button-group">
-            <h3>Streaming Camera</h3>
+            <h3>Streaming Camera
             <input type="text" id="cam_ip" placeholder="Camera IP">
             <input type="text" id="cam_port" placeholder="Camera Port">
             <button id="camera-toggle-button" onclick="toggleCameraStream()">Connect Camera</button>
         </div>
         <div class="button-group">
-            <h3>COM1 Controls</h3>
+            <h3>COM1 Controls
             <input type="text" id="com1_ip" placeholder="COM1 IP">
-            <input type="text" id="com1_port" placeholder="COM1 Port">
-            <button onclick="startAdaface()">Start Adaface</button>
+            <input type="text" id="com1_port" placeholder="COM1 Port"></input>
+            <input type="text" id="person_name" placeholder="Person name">
+            <button onclick="handleCOM1('start_adaface')">Start Adaface</button>
+            <button onclick="handleCOM1('reset_name')">Reset Name</button>
         </div>
         <div class="button-group">
-            <h3>COM2 Controls</h3>
+            <h3>COM2 Controls
             <input type="text" id="com2_ip" placeholder="COM2 IP">
             <input type="text" id="com2_port" placeholder="COM2 Port">
-            <button onclick="startFollower()">Start Follower</button>
+            <input type="text" id="min_depth" placeholder="Min Depth">
+            <input type="text" id="max_depth" placeholder="Max Depth">
+            <button onclick="handleCOM2('start_follower')">Start Follower</button>
+            <button onclick="handleCOM2('reset_depth')">Reset Depth</button>
+            <button onclick="handleCOM2('mycobot')">mycobot</button>
         </div>
     </div>
 
@@ -88,32 +94,53 @@
             }
         }
 
-        function startAdaface() {
+        function handleCOM1(action) {
             const com1_ip = document.getElementById('com1_ip').value;
             const com1_port = document.getElementById('com1_port').value;
-            
-            fetch('/start_adaface', {
+            const person_name = document.getElementById('person_name').value;
+
+            let body = `com1_ip=${com1_ip}&com1_port=${com1_port}`;
+            if (action === 'start_adaface' || action === 'reset_name') {
+                if (person_name === '') {
+                    alert('Please enter a person name');
+                    return;
+                }
+                body += `&person_name=${person_name}`;
+            }
+
+            fetch(`/${action}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `com1_ip=${com1_ip}&com1_port=${com1_port}`
+                body: body
             })
             .then(response => response.text())
             .then(data => alert(data))
             .catch(error => console.error('Error:', error));
         }
 
-        function startFollower() {
+        function handleCOM2(action) {
             const com2_ip = document.getElementById('com2_ip').value;
             const com2_port = document.getElementById('com2_port').value;
-            
-            fetch('/start_follower', {
+            const min_depth = document.getElementById('min_depth').value;
+            const max_depth = document.getElementById('max_depth').value; 
+
+            let body = `com2_ip=${com2_ip}&com2_port=${com2_port}`;
+            if (action === 'start_follower' || action === 'reset_depth') {
+                if (isNaN(min_depth) || isNaN(max_depth)) {
+                    alert('Target Depth must be integer! (default: <b>100 ~ 150 cm</b>)');
+                    return;
+                }
+                body += `&min_depth=${min_depth}&max_depth=${max_depth}`;
+            }
+
+            fetch(`/${action}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `com2_ip=${com2_ip}&com2_port=${com2_port}`
+                body: body
             })
             .then(response => response.text())
             .then(data => alert(data))
