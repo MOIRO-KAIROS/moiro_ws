@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, Response
-import subprocess
-import cv2
 import requests
-from utils import CameraStream
+from utils import CameraStream, kill_terminal
 
 app = Flask(__name__)
 
@@ -48,9 +46,7 @@ def stop_camera():
     if camera_stream is not None:
         camera_stream.stop()
         camera_stream = None
-        # droidcam 시스템 종료
-        subprocess.Popen("ps aux | grep droidcam | grep -v grep | awk '{print $2}' | xargs kill -9", 
-                     shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        kill_terminal("droidcam")
         return 'Camera stream stopped'
     return 'No camera stream to stop'
 
