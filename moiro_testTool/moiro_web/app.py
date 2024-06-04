@@ -9,8 +9,9 @@ app = Flask(__name__)
 camera_stream = None
 
 class CameraStream:
-    def __init__(self, device='0'):
-        self.capture = cv2.VideoCapture(device)
+    def __init__(self, cam_ip, cam_port):
+        self.device = self.set_droidcam(cam_ip, cam_port)
+        self.capture = cv2.VideoCapture(self.device)
         self.frame = None
         self.running = True
         self.lock = threading.Lock()
@@ -33,6 +34,32 @@ class CameraStream:
     def stop(self):
         self.running = False
         self.capture.release()
+    
+    # droidcam-cli 세팅
+    def set_droidcam(self, cam_ip, cam_port):
+        camera_device = None
+        subprocess.Popen("ps aux | grep droidcam | grep -v grep | awk '{print $2}' | xargs kill -9", 
+                        shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        # process.wait()
+        command = f'droidcam-cli {cam_ip} {cam_port}'
+        process = subprocess.Popen(['bash', '-c', command])
+        # process.wait()
+
+        process = subprocess.Popen("echo $(v4l2-ctl --list-devices | grep -A 1 'Droidcam') | awk '{print $3}'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+
+        # 명령어 실행 결과 확인
+        result = stdout.decode('utf-8').strip()
+        
+        if "/dev/video" in result:
+            print(f"Droidcam is connected to {result}")
+            camera_device = result
+        else:
+            print("Droidcam is not connected")
+
+        # 프로세스가 완료될 때까지 대기 후 종료
+        process.wait()
+        return camera_device # echo $(v4l2-ctl --list-devices | grep -A 1 "Droidcam") | awk '{print $3}'
 
 def gen_frames():
     global camera_stream
@@ -56,46 +83,15 @@ def index():
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-def set_droidcam(cam_ip, cam_port):
-    camera_device = None
-    subprocess.Popen("ps aux | grep droidcam | grep -v grep | awk '{print $2}' | xargs kill -9", 
-                     shell=True, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-    # process.wait()
-    command = f'droidcam-cli {cam_ip} {cam_port}'
-    process = subprocess.Popen(['bash', '-c', command])
-    # process.wait()
-
-    process = subprocess.Popen("echo $(v4l2-ctl --list-devices | grep -A 1 'Droidcam') | awk '{print $3}'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-
-    # 명령어 실행 결과 확인
-    result = stdout.decode('utf-8').strip()
-    
-    if "/dev/video" in result:
-        print(f"Droidcam is connected to {result}")
-        camera_device = result
-    else:
-        print("Droidcam is not connected")
-
-    # 프로세스가 완료될 때까지 대기 후 종료
-    process.wait()
-
-    return camera_device # echo $(v4l2-ctl --list-devices | grep -A 1 "Droidcam") | awk '{print $3}'
-
 @app.route('/start_camera', methods=['POST'])
 def start_camera():
     global camera_stream
     cam_ip = request.form['cam_ip']
     cam_port = request.form['cam_port']
     
-    # droidcam-cli 명령어 실행
-    camera_device = set_droidcam(cam_ip, cam_port) 
-    
-    if camera_stream is None:
-        camera_stream = CameraStream(camera_device)
-    else:
+    if camera_stream is not None:
         camera_stream.stop()
-        camera_stream = CameraStream(camera_device)
+    camera_stream = CameraStream(cam_ip, cam_port)
 
     return 'Camera stream started'
 
