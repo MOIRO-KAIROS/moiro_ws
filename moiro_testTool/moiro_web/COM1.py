@@ -18,7 +18,7 @@ def start_adaface():
         return 'Person name is required', 400
     
     command = f"ros2 launch adaface_ros adaface.launch.py person_name:={person_name}"
-    subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {adaface_ros_path}/setup.bash && {command}"], shell=False)
+    subprocess.Popen(['bash', '-c', command], shell=False)
     return 'Adaface started on COM1'
 
 @app.route('/reset_name', methods=['POST'])
@@ -28,7 +28,7 @@ def reset_name():
         return 'Person name is required', 400
     
     command = f"ros2 service call /vision/person_name moiro_interfaces/srv/Person \"{{person_name: {person_name}}}\""
-    subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {adaface_ros_path}/setup.bash && {command}"], shell=False)
+    subprocess.Popen(['bash', '-c', command], shell=False)
     
     return f'Person name reset as {person_name}'
 
