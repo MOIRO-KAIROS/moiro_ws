@@ -4,58 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control Panel</title>
+
     <style>
-        #video {
-            width: 640px;
-            height: 480px;
-            border: 1px solid black;
-        }
-        #controls {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-left: 20px;
-        }
-        .button-group {
-            margin-bottom: 10px;
-        }
-    </style>
-</head>
-<body>
-    <div id="video">
-        <img src="{{ url_for('video_feed') }}" width="640" height="480">
-    </div>
-    <div id="controls">
-        <div class="button-group">
-            <h3>Streaming Camera
-            <input type="text" id="cam_ip" placeholder="Camera IP">
-            <input type="text" id="cam_port" placeholder="Camera Port">
-            <button id="camera-toggle-button" onclick="toggleCameraStream()">Connect Camera</button>
+             #container {
+                display: flex;
+            }
+            #video {
+                width: 640px;
+                height: 480px;
+                border: 1px solid black;
+                margin-left: 35px;
+                margin-top: 20px;
+            }
+            #controls {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                margin-left: 100px;
+                margin-right : 20px;
+            }
+            .button-group input{
+                width: 180px;
+                height: 30px; 
+                font-size: 16px;
+                margin-right: 20px;
+                margin-bottom: 15px;
+            }
+            .button-group button,
+            .button-group select {
+                width: 180px;
+                height: 50px; 
+                font-size: 16px;
+                margin-right: 20px;
+                margin-bottom: 15px;
+            }
+            .reset-button {
+                width: 50px;
+                height: 50px;
+                font-size: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <div id="video">
+                <img src="{{ url_for('video_feed') }}" width="640" height="480">
+            </div>
+            <div id="controls">
+                <div class="button-group">
+                    <h3>Streaming Camera
+                    <input type="text" id="cam_ip" placeholder="Camera IP">
+                    <input type="text" id="cam_port" placeholder="Camera Port">
+                    <button id="camera-toggle-button" onclick="toggleCameraStream()">Connect Camera</button>
+                </div>
+                <div class="button-group">
+                    <h3>Raspberry Pi
+                    <input type="text" id="rasp_ip" placeholder="Rasp IP">
+                    <input type="text" id="rasp_port" placeholder="Rasp Port">
+                    <button onclick="raspConnect()">Connect Rasp</button>
+                </div>
+                <div class="button-group">
+                    <h3>COM1 Controls
+                    <input type="text" id="com1_ip" placeholder="COM1 IP">
+                    <input type="text" id="com1_port" placeholder="COM1 Port"><br>
+                    <button onclick="handleCOM1('start_adaface')">Start Adaface</button>
+                    <select id="file_select" onchange="loadNames()">
+                        <option value="">Select File</option>
+                    </select>
+                    <select id="person_name">
+                        <option value="">Select Person</option>
+                    </select>
+                    <button class="reset-button" onclick="handleCOM1('reset_name')">Reset Name</button><br>
+                    <button onclick="handleCOM1('sync_play')">Sync Play</button>
+                </div>
+                <div class="button-group">
+                    <h3>COM2 Controls
+                    <input type="text" id="com2_ip" placeholder="COM2 IP">
+                    <input type="text" id="com2_port" placeholder="COM2 Port"><br>
+                    <button onclick="handleCOM2('start_follower')">Start Follower</button>
+                    <input type="text" id="min_depth" placeholder="Min Depth">
+                    <input type="text" id="max_depth" placeholder="Max Depth">
+                    <button `="reset-button" onclick="handleCOM2('reset_depth')">Reset Depth</button><br>
+                    <button onclick="handleCOM2('mycobot')">mycobot</button>
+                </div>
+            </div>
         </div>
-        <div class="button-group">
-            <h3>COM1 Controls
-            <input type="text" id="com1_ip" placeholder="COM1 IP">
-            <input type="text" id="com1_port" placeholder="COM1 Port"></input>
-            <select id="file_select" onchange="loadNames()">
-                <option value="">Select File</option>
-            </select>
-            <select id="person_name">
-                <option value="">Select Person</option>
-            </select>
-            <button onclick="handleCOM1('start_adaface')">Start Adaface</button>
-            <button onclick="handleCOM1('reset_name')">Reset Name</button>
-        </div>
-        <div class="button-group">
-            <h3>COM2 Controls
-            <input type="text" id="com2_ip" placeholder="COM2 IP">
-            <input type="text" id="com2_port" placeholder="COM2 Port">
-            <input type="text" id="min_depth" placeholder="Min Depth">
-            <input type="text" id="max_depth" placeholder="Max Depth">
-            <button onclick="handleCOM2('start_follower')">Start Follower</button>
-            <button onclick="handleCOM2('reset_depth')">Reset Depth</button>
-            <button onclick="handleCOM2('mycobot')">mycobot</button>
-        </div>
-    </div>
 
     <script>
         
@@ -104,7 +137,20 @@
                 .catch(error => console.error('Error:', error));
             }
         }
-
+        function raspConnect(){
+            const rasp_ip = document.getElementById('rasp_ip').value;
+            const rasp_port = document.getElementById('rasp_port').value;
+            fetch('/start_rasp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `rasp_ip=${rasp_ip}&rasp_port=${rasp_port}`
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+        }
         function toggleCameraStream() {
             const cam_ip = document.getElementById('cam_ip').value;
             const cam_port = document.getElementById('cam_port').value;

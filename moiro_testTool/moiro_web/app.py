@@ -69,6 +69,14 @@ def stop_camera():
         return 'Camera stream stopped'
     return 'No camera stream to stop'
 ###
+@app.route('/start_rasp', methods=['POST'])
+def start_rasp():
+    rasp_ip = request.form['rasp_ip']
+    rasp_port = request.form['rasp_port']
+    
+    response = requests.post(f'http://{rasp_ip}:{rasp_port}/start_rasp')
+    return response.text
+###
 @app.route('/start_adaface', methods=['POST'])
 def start_adaface():
     com1_ip = request.form['com1_ip']
@@ -86,6 +94,14 @@ def reset_name():
     
     response = requests.post(f'http://{com1_ip}:{com1_port}/reset_name',person_name)
     return response.text
+
+@app.route('/sync_play', methods=['POST'])
+def sync_play():
+    com1_ip = request.form['com1_ip']
+    com1_port = request.form['com1_port']
+    
+    response = requests.post(f'http://{com1_ip}:{com1_port}/sync_play')
+    return response.text
 ###
 @app.route('/start_follower', methods=['POST'])
 def start_follower():
@@ -96,6 +112,7 @@ def start_follower():
     
     response = requests.post(f'http://{com2_ip}:{com2_port}/start_follower',json=[min_depth, max_depth])
     return response.text
+
 @app.route('/reset_depth', methods=['POST'])
 def reset_depth():
     com2_ip = request.form['com2_ip']
