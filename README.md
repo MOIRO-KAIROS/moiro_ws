@@ -51,7 +51,10 @@ git submodule update --init --recursive
   │   │   ├── adaface_ros2.py
   │   │   ├── __init__.py
   │   │   └── script
-  │   │       ├── embed
+  │   │       ├── face_dataset
+  │   │               ├── {그룹명}
+  │   │                      ├── embed
+  │   │                      └── images
   │   │       ├── pretrained
   │   │       ├── ...
   │   ├── launch
@@ -63,6 +66,22 @@ git submodule update --init --recursive
   ├── README.md
   └── yolov8_ros
   ```
+
+### 3. 터미널 설정 (vim ~/.basrc) 
+```sh
+# Raspi
+source /opt/ros/humble/setup.bash
+export ROS_DOMAIN_ID=
+export LDS_MODEL=LDS-02
+source $HOME/moiro_ws/install/setup.bash
+```
+
+```sh
+# COM1
+source /opt/ros/humble/setup.bash
+export ROS_DOMAIN_ID=
+source $HOME/moiro_ws/install/setup.bash
+```
 
 ### 3. ROS2 - colcon build
 ```sh
