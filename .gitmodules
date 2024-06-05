@@ -4,9 +4,6 @@
 [submodule "src/moiro_interfaces"]
 	path = src/moiro_interfaces
 	url = https://github.com/MOIRO-KAIROS/moiro_interfaces.git
-[submodule "src/moiro_description"]
-	path = src/moiro_description
-	url = https://github.com/MOIRO-KAIROS/moiro_description.git
 [submodule "src/moiro_agv"]
 	path = src/moiro_agv
 	url = https://github.com/MOIRO-KAIROS/moiro_agv.git
