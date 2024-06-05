@@ -67,7 +67,14 @@ git submodule update --init --recursive
   └── yolov8_ros
   ```
 
-### 3. 터미널 설정 (vim ~/.basrc) 
+### 3. ROS2 - colcon build
+```sh
+cd moiro_ws
+source /opt/ros/humble/setup.bash
+colcon build
+```
+
+### 4. 터미널 설정 (vim ~/.basrc) 
 ```sh
 # Raspi
 source /opt/ros/humble/setup.bash
@@ -83,17 +90,9 @@ export ROS_DOMAIN_ID=
 source $HOME/moiro_ws/install/setup.bash
 ```
 
-### 3. ROS2 - colcon build
-```sh
-cd moiro_ws
-source /opt/ros/humble/setup.bash
-colcon build
-```
-
-### 4. run ROS2
+### 5. run ROS2
 #### (1) Terminal로 실행하는 방법
 ```sh
-source ~/moiro_ws/install/setup.bash
 ros2 launch adaface_ros adaface.launch.py person_name:={$PERSON_NAME}
 ```
 
