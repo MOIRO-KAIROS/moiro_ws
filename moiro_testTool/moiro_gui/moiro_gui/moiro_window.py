@@ -96,9 +96,14 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
 
         # Person select comboBox
+        self.team_comboBox = QtWidgets.QComboBox(self.centralwidget)
+        # self.team_comboBox.setGeometry(QtCore.QRect(270, 50, 100, 41))
+        self.team_comboBox.setGeometry(QtCore.QRect(1265, 80, 150, 50))
+        self.team_comboBox.setFont(self.font)
+        self.team_comboBox.setObjectName("team_comboBox")
+
         self.person_comboBox = QtWidgets.QComboBox(self.centralwidget)
-        # self.person_comboBox.setGeometry(QtCore.QRect(270, 50, 100, 41))
-        self.person_comboBox.setGeometry(QtCore.QRect(1265, 80, 310, 50))
+        self.person_comboBox.setGeometry(QtCore.QRect(1425, 80, 150, 50))
         self.person_comboBox.setFont(self.font)
         self.person_comboBox.setObjectName("person_comboBox")
         ################
@@ -171,10 +176,10 @@ class Ui_MainWindow(object):
         self.depth_min_label.setText(_translate("MainWindow", "Min"))
 
         parent_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(get_package_share_directory('moiro_gui')))))
-        fnames = torch.load(os.path.join(parent_path +'/src/moiro_vision/adaface_ros/adaface_ros/script/embed/ids.pt'))
-        self.person_comboBox.clear()  # 기존 아이템 초기화
+        fnames = os.listdir(os.path.join(parent_path +'/moiro_testTool/moiro_web/embed/'))
+        self.team_comboBox.clear()  # 기존 아이템 초기화
         for file_name in fnames:
-            self.person_comboBox.addItem(file_name)
+            self.team_comboBox.addItem(file_name.split('.')[0])
 
         self.reset_fr.setText(_translate("MainWindow", "RESET FR"))
         self.reset_hf.setText(_translate("MainWindow", "RESET HF"))

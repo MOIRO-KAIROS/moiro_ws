@@ -77,6 +77,7 @@ class Myagv_Window(moiro_window, QMainWindow):
         self.setWindowTitle('moiro Test Tool')
         self.ros = False
         self.run_launch = ""
+        self.parent_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(get_package_share_directory('moiro_gui')))))
 
         self.adaface_process = None
         self.follower_process = None
@@ -87,6 +88,7 @@ class Myagv_Window(moiro_window, QMainWindow):
         self.follower_button.clicked.connect(self.toggle_follower)
         self.reset_fr.clicked.connect(self.reset_person_name)
         self.reset_hf.clicked.connect(self.reset_depth_range)
+        self.team_comboBox.currentIndexChanged.connect(self.update_personBox)
 
         # 카메라 스레드 시작
         self.camera_thread = CameraThread()
@@ -100,6 +102,15 @@ class Myagv_Window(moiro_window, QMainWindow):
         
         # self.paths example : /home/minha/moiro_gui_ws/install/
         self.paths = os.path.abspath(os.path.join(get_package_share_directory('adaface_ros'), "../../../"))
+    
+    def update_personBox(self):
+        self.person_comboBox.clear()
+        filename = self.team_comboBox.currentText() + '.txt'
+        fnames = os.path.join(self.parent_path + '/moiro_testTool/moiro_web/embed/' + filename)
+        if os.path.exists(fnames):
+            with open(fnames, 'r') as file:
+                for line in file.readlines():
+                    self.person_comboBox.addItem(line.strip()) 
 
     def closeEvent(self, event):
         self.camera_thread.stop()
