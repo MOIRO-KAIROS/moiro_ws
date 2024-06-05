@@ -34,7 +34,7 @@ def reset_name():
 
 @app.route('/sync_play', methods=['POST'])
 def sync_play():
-    process = subprocess.Popen(['bash', '-c','sudo chomod 777 /dev/ttyACM0'], shell=False)
+    process = subprocess.Popen(['bash', '-c','sudo chmod 777 /dev/ttyACM0'], shell=False)
     process.wait()
     print('hello~ sync play')
     # command = f"ros2 launch mycobot_movegroup mycobot_movegroup_service_class_interface.launch.py"
