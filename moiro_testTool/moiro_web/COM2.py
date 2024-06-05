@@ -3,6 +3,8 @@ import subprocess
 import os
 from ament_index_python.packages import get_package_share_directory
 from utils import kill_terminal
+import rclpy
+from geometry_msgs.msg import Twist
 
 app = Flask(__name__)
 
@@ -39,4 +41,11 @@ def mycobot():
     return f'Mycobot started on COM2'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    try:
+        app.run(host='0.0.0.0', port=5000)
+    except KeyboardInterrupt:
+        command = 'ros2 topic pub --once  /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"'
+        process = subprocess.Popen(['bash', '-c', command], shell=False)
+        process.wait()
+        kill_terminal(os.path.join(human_follower_path, 'human_follower/lib/human_follower'))
+        # os.path.join(human_follower_path, 'mycobot_movegroup/lib/mycobot_movegroup')
