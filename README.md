@@ -96,11 +96,20 @@ source $HOME/moiro_ws/install/setup.bash
 ros2 launch adaface_ros adaface.launch.py person_name:={$PERSON_NAME}
 ```
 
-#### (2) GUI로 실행하는 방법
+#### (2) GUI로 실행하는 방법 - Web 용
+```sh
+# port 가 이미 지정되어 있다면,
+# lsof -n -i -P | grep 8080 | grep -v grep | awk '{print $2}' | xargs kill -9
+# flask가 없다면,
+# pip install flask==3.0.3
+python3 moiro_testTool/moiro_web/app.py
+```
+
+
+#### (3) GUI로 실행하는 방법 - Debug 용
 ##### 1) droidcam install
 - 참고하여서 설치 : https://www.youtube.com/watch?v=anUmPoF6eJY
 ```
-cd /tmp
 droidcam
 ```
 ##### 2) Terminal 입력
