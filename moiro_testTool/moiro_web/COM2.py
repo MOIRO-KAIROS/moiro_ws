@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 # adaface_ros 패키지의 경로 설정
 human_follower_path = os.path.abspath(os.path.join(get_package_share_directory('human_follower'), "../../../"))
-mycobot_path = os.path.abspath(os.path.join(get_package_share_directory('mycobot_movegroup'), "../../../"))
+mycobot_path = os.path.abspath(os.path.join(get_package_share_directory('moiro_arm_move_group'), "../../../"))
 
 @app.route('/start_follower', methods=['POST'])
 def start_follower():
@@ -35,6 +35,8 @@ def reset_depth():
 @app.route('/mycobot', methods=['POST'])
 def mycobot():
     kill_terminal('moiro_arm_move_group')
+    command = f"ros2 launch moiro_arm_move_group moiro_arm_move_group.launch.py"
+    subprocess.Popen(['bash', '-c', command], shell=False)
     command = f"ros2 launch moiro_arm_move_group moiro_arm_move_group_service_class_interface.launch.py"
     subprocess.Popen(['bash', '-c', command], shell=False)
     return f'Mycobot started on COM2'
