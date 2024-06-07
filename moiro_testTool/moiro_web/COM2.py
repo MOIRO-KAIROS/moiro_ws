@@ -53,10 +53,10 @@ def killMycobot():
 
 if __name__ == '__main__':
     try:
-        app.run(host='0.0.0.0', port=5000)
+        app.run(host='0.0.0.0', port=5001)
     except KeyboardInterrupt:
         command = 'ros2 topic pub --once  /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"'
         process = subprocess.Popen(['bash', '-c', command], shell=False)
         process.wait()
         kill_terminal(os.path.join(human_follower_path, 'human_follower/lib/human_follower'))
-        kill_terminal('5000')
+        kill_terminal('5001')

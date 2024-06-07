@@ -6,7 +6,7 @@
     <title>Control Panel</title>
 
     <style>
-             #container {
+            #container {
                 display: flex;
             }
             #video {
@@ -54,19 +54,21 @@
                 <div class="button-group">
                     <h3>Streaming Camera
                     <input type="text" id="cam_ip" placeholder="Camera IP">
-                    <input type="text" id="cam_port" placeholder="Camera Port">
+                    <input type="text" id="cam_port" placeholder="Camera Port"  value="4747">
                     <button id="camera-toggle-button" onclick="toggleCameraStream()">Connect Camera</button>
-                </div>
+                <!-- </div>
+                <div id="message" style="color: red; margin-top: 10px; max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
+                </div> -->
                 <div class="button-group">
                     <h3>Raspberry Pi
-                    <input type="text" id="rasp_ip" placeholder="Rasp IP">
-                    <input type="text" id="rasp_port" placeholder="Rasp Port">
+                    <input type="text" id="rasp_ip" placeholder="Rasp IP" value="172.30.1.54">
+                    <input type="text" id="rasp_port" placeholder="Rasp Port"  value="5000">
                     <button onclick="raspConnect()">Connect Rasp</button>
                 </div>
                 <div class="button-group">
                     <h3>COM1 Controls
                     <input type="text" id="com1_ip" placeholder="COM1 IP">
-                    <input type="text" id="com1_port" placeholder="COM1 Port"><br>
+                    <input type="text" id="com1_port" placeholder="COM1 Port" value="5000"><br>
                     <button onclick="handleCOM1('start_adaface')">Start Adaface</button>
                     <select id="file_select" onchange="loadNames()">
                         <option value="">Select File</option>
@@ -82,7 +84,7 @@
                 <div class="button-group">
                     <h3>COM2 Controls
                     <input type="text" id="com2_ip" placeholder="COM2 IP">
-                    <input type="text" id="com2_port" placeholder="COM2 Port"><br>
+                    <input type="text" id="com2_port" placeholder="COM2 Port" value="5001"><br>
                     <button onclick="handleCOM2('start_follower')">Start Follower</button>
                     <input type="text" id="min_depth" placeholder="Min Depth">
                     <input type="text" id="max_depth" placeholder="Max Depth">
@@ -95,12 +97,34 @@
         </div>
 
     <script>
-        
         let cameraStreaming = false;
+
+        // let socket;
 
         document.addEventListener('DOMContentLoaded', function() {
             loadFileList();
         });
+
+        // function setupWebSocket() {
+        //     const com2_ip = document.getElementById('com2_ip').value;
+        //     const com2_port = document.getElementById('com2_port').value;
+        //     socket = io.connect('http://' + com2_ip + ':' + com2_port);
+
+        //     return new Promise((resolve, reject) => {
+        //         socket.on('stderr_output', function(data) {
+        //             const MessageContainer = document.getElementById('message');
+        //             const newMessage = document.createElement('div');
+        //             newMessage.textContent = data.message;
+        //             MessageContainer.appendChild(newMessage);
+
+        //             // 스크롤을 가장 아래로 이동
+        //             MessageContainer.scrollTop = MessageContainer.scrollHeight;
+
+        //             // WebSocket 설정이 완료되었음을 resolve로 알림
+        //             resolve();
+        //         });
+        //     });
+        // }
 
         function loadFileList() {
             fetch('/get_file_list')
@@ -239,6 +263,13 @@
                     return;
                 }
                 body += `&min_depth=${min_depth}&max_depth=${max_depth}`;
+                // if (action === 'start_follower') {
+                //     // WebSocket 설정이 완료된 후에 fetch를 실행하도록 Promise 체이닝
+                //     setupWebSocket().then(() => {
+                //         executeFetch(action, body);
+                //     });
+                //     return; // fetch를 여기서 실행하지 않고 Promise 체이닝을 기다립니다.
+                // }
             }
             else if(action == 'killHF'){
                 alert('Human follower is killed');

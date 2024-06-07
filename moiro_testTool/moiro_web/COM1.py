@@ -44,6 +44,8 @@ def sync_play():
 @app.route('/killAdaface', methods=['POST'])
 def killAdaface():
     kill_terminal(os.path.join(adaface_ros_path, 'adaface_ros/lib/adaface_ros'))
+    kill_terminal(os.path.join(adaface_ros_path, 'yolov8_ros/lib/yolov8_ros'))
+    kill_terminal(os.path.join(adaface_ros_path, 'realsense2_camera/lib/realsense2_camera'))
     return 'Adaface killed'
 
 @app.route('/killSyncPlay', methods=['POST'])
