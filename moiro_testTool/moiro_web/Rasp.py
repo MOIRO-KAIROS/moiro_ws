@@ -14,4 +14,7 @@ def reset_name():
     return f'Rasp start'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    try:
+        app.run(host='0.0.0.0', port=5000)
+    except KeyboardInterrupt:
+        kill_terminal('5000')

@@ -74,8 +74,10 @@
                     <select id="person_name">
                         <option value="">Select Person</option>
                     </select>
-                    <button class="reset-button" onclick="handleCOM1('reset_name')">Reset Name</button><br>
+                    <button class="reset-button" onclick="handleCOM1('reset_name')">Reset Name</button>
+                    <button onclick="handleCOM1('killAdaface')">Kill Adaface</button><br>
                     <button onclick="handleCOM1('sync_play')">Sync Play</button>
+                    <button onclick="handleCOM1('killSyncPlay')">Kill Sync Play</button>
                 </div>
                 <div class="button-group">
                     <h3>COM2 Controls
@@ -84,8 +86,10 @@
                     <button onclick="handleCOM2('start_follower')">Start Follower</button>
                     <input type="text" id="min_depth" placeholder="Min Depth">
                     <input type="text" id="max_depth" placeholder="Max Depth">
-                    <button `="reset-button" onclick="handleCOM2('reset_depth')">Reset Depth</button><br>
+                    <button `="reset-button" onclick="handleCOM2('reset_depth')">Reset Depth</button>
+                    <button onclick="handleCOM2('killHF')">Kill HF</button><br>
                     <button onclick="handleCOM2('mycobot')">mycobot</button>
+                    <button onclick="handleCOM2('killMycobot')">Kill mycobot</button>
                 </div>
             </div>
         </div>
@@ -203,6 +207,12 @@
                 }
                 body += `&person_name=${person_name}`;
             }
+            else if(action == 'killAdaface'){
+                alert('Adaface is killed');
+            }
+            else if(action == 'killSyncPlay'){
+                alert('SyncPlay is killed');
+            }
 
             fetch(`/${action}`, {
                 method: 'POST',
@@ -230,7 +240,12 @@
                 }
                 body += `&min_depth=${min_depth}&max_depth=${max_depth}`;
             }
-
+            else if(action == 'killHF'){
+                alert('Human follower is killed');
+            }
+            else if(action == 'killMycobot'){
+                alert('Mycobot is killed');
+            }
             fetch(`/${action}`, {
                 method: 'POST',
                 headers: {

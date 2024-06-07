@@ -36,11 +36,23 @@ def reset_name():
 def sync_play():
     process = subprocess.Popen(['bash', '-c','sudo chmod 777 /dev/ttyACM0'], shell=False)
     process.wait()
-    print('hello~ sync play')
-    # command = f"ros2 launch mycobot_movegroup mycobot_movegroup_service_class_interface.launch.py"
-    # subprocess.Popen(['bash', '-c', command], shell=False)
+    command = f"ros2 run moiro_arm_robot_driver sync_play"
+    subprocess.Popen(['bash', '-c', command], shell=False)
     
     return 'Sync play start'
 
+@app.route('/killAdaface', methods=['POST'])
+def killAdaface():
+    kill_terminal(os.path.join(adaface_ros_path, 'adaface_ros/lib/adaface_ros'))
+    return 'Adaface killed'
+
+@app.route('/killSyncPlay', methods=['POST'])
+def killSyncPlay():
+    kill_terminal('moiro_arm_robot_driver/lib/moiro_arm_robot_driver')
+    return 'Sync play killed'
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    try:
+        app.run(host='0.0.0.0', port=5000)
+    except KeyboardInterrupt:
+        kill_terminal('5000')

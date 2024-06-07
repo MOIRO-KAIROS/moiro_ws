@@ -34,11 +34,20 @@ def reset_depth():
 
 @app.route('/mycobot', methods=['POST'])
 def mycobot():
-    # kill_terminal('mycobot_movegroup')
-    # command = f"ros2 launch mycobot_movegroup mycobot_movegroup._service_class_interface.launch.py"
-    # subprocess.Popen(['bash', '-c', f"source ~/.bashrc && source {mycobot_path}/setup.bash && {command}"], shell=False)
-    print('I DONT KNOW HOW TO RUN MYCOBOT')
+    kill_terminal('moiro_arm_move_group')
+    command = f"ros2 launch moiro_arm_move_group moiro_arm_move_group_service_class_interface.launch.py"
+    subprocess.Popen(['bash', '-c', command], shell=False)
     return f'Mycobot started on COM2'
+
+@app.route('/killHF', methods=['POST'])
+def killHF():
+    kill_terminal(os.path.join(human_follower_path, 'human_follower/lib/human_follower'))
+    return 'Human Follower killed'
+
+@app.route('/killMycobot', methods=['POST'])
+def killMycobot():
+    kill_terminal(os.path.join(mycobot_path, 'mycobot_movegroup/lib/mycobot_movegroup'))
+    return 'Mycobot killed'
 
 if __name__ == '__main__':
     try:
@@ -48,4 +57,4 @@ if __name__ == '__main__':
         process = subprocess.Popen(['bash', '-c', command], shell=False)
         process.wait()
         kill_terminal(os.path.join(human_follower_path, 'human_follower/lib/human_follower'))
-        # os.path.join(human_follower_path, 'mycobot_movegroup/lib/mycobot_movegroup')
+        kill_terminal('5000')

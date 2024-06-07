@@ -102,6 +102,22 @@ def sync_play():
     
     response = requests.post(f'http://{com1_ip}:{com1_port}/sync_play')
     return response.text
+
+@app.route('/killAdaface', methods=['POST'])
+def killAdaface():
+    com1_ip = request.form['com1_ip']
+    com1_port = request.form['com1_port']
+    
+    response = requests.post(f'http://{com1_ip}:{com1_port}/killAdaface')
+    return response.text
+
+@app.route('/killSyncPlay', methods=['POST'])
+def killSyncPlay():
+    com1_ip = request.form['com1_ip']
+    com1_port = request.form['com1_port']
+    
+    response = requests.post(f'http://{com1_ip}:{com1_port}/killSyncPlay')
+    return response.text
 ###
 @app.route('/start_follower', methods=['POST'])
 def start_follower():
@@ -131,5 +147,24 @@ def mycobot():
     response = requests.post(f'http://{com2_ip}:{com2_port}/mycobot')
     return response.text
 
+@app.route('/killHF', methods=['POST'])
+def killHF():
+    com2_ip = request.form['com2_ip']
+    com2_port = request.form['com2_port']
+    
+    response = requests.post(f'http://{com2_ip}:{com2_port}/killHF')
+    return response.text
+
+@app.route('/killMycobot', methods=['POST'])
+def killMycobot():
+    com2_ip = request.form['com2_ip']
+    com2_port = request.form['com2_port']
+    
+    response = requests.post(f'http://{com2_ip}:{com2_port}/killMycobot')
+    return response.text
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    try:
+        app.run(host='0.0.0.0', port=8080, debug=True)
+    except KeyboardInterrupt:
+        kill_terminal('8080')
