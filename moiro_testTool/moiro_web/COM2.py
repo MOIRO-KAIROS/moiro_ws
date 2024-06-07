@@ -48,7 +48,7 @@ def killHF():
 
 @app.route('/killMycobot', methods=['POST'])
 def killMycobot():
-    kill_terminal(os.path.join(mycobot_path, 'mycobot_movegroup/lib/mycobot_movegroup'))
+    kill_terminal(os.path.join(mycobot_path, 'moiro_arm_move_group/lib/moiro_arm_move_group'))
     return 'Mycobot killed'
 
 if __name__ == '__main__':
