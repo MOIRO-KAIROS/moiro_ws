@@ -43,6 +43,9 @@ def mycobot():
 
 @app.route('/killHF', methods=['POST'])
 def killHF():
+    command = 'ros2 topic pub --once  /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"'
+    process = subprocess.Popen(['bash', '-c', command], shell=False)
+    process.wait()
     kill_terminal(os.path.join(human_follower_path, 'human_follower/lib/human_follower'))
     return 'Human Follower killed'
 
