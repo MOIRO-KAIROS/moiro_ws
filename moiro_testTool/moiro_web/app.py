@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, Response, jsonify
-from flask_socketio import SocketIO, emit
 import requests, os
 from utils import CameraStream, kill_terminal
-from ament_index_python.packages import get_package_share_directory
 
 app = Flask(__name__)
 # socketio = SocketIO(app)
