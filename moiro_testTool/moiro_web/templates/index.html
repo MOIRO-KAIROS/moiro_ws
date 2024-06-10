@@ -9,29 +9,41 @@
 
     <style>
         #video {
-            width: 640px;
-            height: 480px;
+            width: 900px;
+            height: 600px;
             border: 1px solid black;
+            position: fixed;
+            top: 50%;
+            left: 130px;
+            transform: translateY(-50%);
         }
         .reset-button {
             width: 75px;
             height: 40px;
             font-size: 16px;
         }
+        .scrollable-content {
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden; /* Ensure horizontal scrolling is disabled */
+            margin-left: 1150px; /* Adjusted for more space */
+            padding-top: 20px;
+        }
+        body {
+            overflow-x: hidden; /* Prevent horizontal scroll on the body */
+        }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row mt-3">
-            <div class="col-md-7">
-                <div id="video" class="mx-auto">
-                    <img src="{{ url_for('video_feed') }}" width="100%" height="100%">
-                </div>
-            </div>
+    <div id="video">
+        <img src="{{ url_for('video_feed') }}" width="100%" height="100%">
+    </div>
+    <div class="scrollable-content container-fluid">
+        <div class="row">
             <div class="col-md-5">
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h3>Streaming Camera</h3>
+                        <h4>Streaming Camera</h4>
                         <div class="form-row">
                             <div class="form-group col-md-8">
                                 <input type="text" id="cam_ip" class="form-control" placeholder="Camera IP">
@@ -45,7 +57,7 @@
                 </div>
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h3>Raspberry Pi</h3>
+                        <h4>Raspberry Pi</h4>
                         <div class="form-row">
                             <div class="form-group col-md-8">
                                 <input type="text" id="rasp_ip" class="form-control" placeholder="Rasp IP">
@@ -59,7 +71,7 @@
                 </div>                
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h3>COM1 Controls</h3>
+                        <h4>COM1 Controls</h4>
                         <div class="form-row">
                             <div class="form-group col-md-8">
                                 <input type="text" id="com1_ip" class="form-control" placeholder="COM1 IP">
@@ -108,7 +120,7 @@
                 </div>                                                       
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h3>COM2 Controls</h3>
+                        <h4>COM2 Controls</h4>
                         <div class="form-row">
                             <div class="form-group col-md-8">
                                 <input type="text" id="com2_ip" class="form-control" placeholder="COM2 IP">
