@@ -10,28 +10,26 @@
     <style>
         #video-container {
             position: relative;
-            width: 60%;
-            height: 0; /* 비디오 컨테이너의 높이를 설정하지 않음 */
-            padding-bottom: 40%; /* 75% = 480 * (60 / 640) */ /* 56.25 = 16: 9*/
+            width: 640px;
+            height: 480px;
             margin: auto;
             text-align: center;
-            overflow: hidden; /* 비디오가 넘칠 경우 숨김 처리 */
+            padding: 0; /* Padding을 제거하여 보더와 비디오 간의 여백을 없앱니다 */
+            border: 1px solid black; /* 경계선 추가 */
+            box-sizing: border-box; /* 경계선과 패딩을 요소의 크기에 포함 */
+        }
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 비디오가 컨테이너에 맞도록 */
         }
         #video-controls {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
+            width: 640px;
+            margin: 10px auto 0;
+            text-align: center;
             background: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
-        }
-        #video {
-            position: relative;
-            margin: auto;
-            display: block;
-            max-width: 80%; /* 최대 너비 */
-            max-height: 80%; /* 최대 높이 */
-            border: 1px solid black;
         }
         .reset-button {
             width: 75px;
@@ -54,19 +52,19 @@
         <div class="row mt-3">
             <div class="col-md-12 text-center" id="video-container">
                 <div id="video" class="d-inline-block">
-                    <img src="{{ url_for('video_feed') }}" width="100%" height="100%">
+                    <img src="{{ url_for('video_feed') }}" alt="Video Feed">
                 </div>
-                <div id="video-controls">
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <input type="text" id="cam_ip" class="form-control" placeholder="Camera IP">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <input type="text" id="cam_port" class="form-control" placeholder="Port">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <button id="camera-toggle-button" class="btn btn-primary btn-block" onclick="toggleCameraStream()">Connect Camera</button>
-                        </div>
+            </div>
+            <div id="video-controls">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input type="text" id="cam_ip" class="form-control" placeholder="Camera IP">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <input type="text" id="cam_port" class="form-control" placeholder="Port">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button id="camera-toggle-button" class="btn btn-primary btn-block" onclick="toggleCameraStream()">Connect Camera</button>
                     </div>
                 </div>
             </div>
