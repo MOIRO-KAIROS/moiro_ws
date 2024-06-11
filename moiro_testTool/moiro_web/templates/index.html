@@ -6,23 +6,24 @@
     <title>Control Panel</title>
     <!-- Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
+    
     <style>
         html, body {
             height: 100%;
             margin: 0;
             overflow: hidden; /* Prevents scrolling on the body */
+            /*background-color: #222; /* Dark background color */
         }
-
         .container-fluid {
             height: 100%;
         }
-
         #video-container {
             position: relative;
             width: 100%;
             height: 480px;
-            margin: 50px auto;
+            /*margin: 50px auto;*/
+            margin-top: 60px;
+            margin-bottom: 15px;
             margin-left: 50px;
             text-align: center;
             padding: 0;
@@ -30,39 +31,57 @@
             box-sizing: border-box;
             background-color: #333;
         }
-
         #video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         #video-controls {
+            /*display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;*/
             width: 100%;
-            margin-top: 5px;
             margin-left: 50px;
             text-align: center;
             background: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
+        }       
+        #video-controls .form-group {
+            margin-bottom: 0px; /* Adjust the bottom margin for spacing between items */
         }
-
         .reset-button {
             width: 75px;
             height: 40px;
             font-size: 16px;
         }
-
+        .scrollable-column::-webkit-scrollbar {
+            display: none;
+        }
         .scrollable-column {
             left: 100px;
-            max-height: calc(100vh - 100px); /* Adjust based on other elements' heights */
+            max-height: calc(100vh - 250px); /* Adjust based on other elements' heights */
             overflow-y: auto;
-            margin: 30px;
+            /*margin: 100px;*/
+            margin-top:45px;
+            margin-left: 50px;
             padding-right: 15px; /* Add padding to avoid hiding content behind scrollbar */
         }
     </style>
 </head>
 <body>
+    <header style="text-align: center; background-color: #333; color: white; padding: 10px;">
+        <h1>MOIRO</h1>
+    </header>
+    <footer style="text-align: center; background-color: #333; color: white; padding: 10px;">
+        <a href="https://github.com/MOIRO-KAIROS" target="_blank" style="color: white; text-decoration: none; margin-right: 10px;">
+            <i class="fab fa-github"></i> GitHub Organization
+        </a>
+        <a href="https://github.com/MOIRO-KAIROS/moiro_ws" target="_blank" style="color: white; text-decoration: none;">
+            <i class="fab fa-github"></i> GitHub Repository
+        </a>
+    </footer>
     <div class="container-fluid">
         <div class="row mt-3">
             <!-- Left Column for Webcam (6 parts) -->
