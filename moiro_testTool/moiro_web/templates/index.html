@@ -40,9 +40,13 @@
             font-size: 16px;
         }
         .scrollable-column {
+            left : 150px;
             max-height: 800px; /* Adjust this value as needed */
             overflow-y: auto;
             margin: 50px;
+        }
+        body{
+            overflow-y: hidden;
         }
     </style>
 </head>
@@ -230,7 +234,7 @@
         function loadNames() {
             const filename = document.getElementById('file_select').value;
             if (filename) {
-                fetch('/get_names', {
+                fetch('/get_names_from_file', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

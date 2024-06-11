@@ -3,7 +3,6 @@ import requests, os
 from utils import CameraStream, kill_terminal
 
 app = Flask(__name__)
-# socketio = SocketIO(app)
 
 camera_stream = None
 embed_path = os.path.join(os.path.dirname(__file__), 'embed') # os.path.dirname(__file__) = moiro_testTool/moiro_web
@@ -32,7 +31,6 @@ def get_file_list():
 @app.route('/get_names_from_file', methods=['POST'])
 def get_names_from_file():
     filename = os.path.join(embed_path, f"{request.form['filename']}.txt")
-    # print(filename)
     if os.path.exists(filename):
         with open(filename, 'r') as file:
             names = [line.strip() for line in file.readlines()]
