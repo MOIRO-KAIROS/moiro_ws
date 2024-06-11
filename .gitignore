@@ -4,3 +4,4 @@ log
 build
 install
 **/yolov8m-pose.pt
+moiro_testTool/moiro_web/output/

@@ -5,6 +5,7 @@ from utils import CameraStream, kill_terminal
 app = Flask(__name__)
 
 camera_stream = None
+recording = False
 embed_path = os.path.join(os.path.dirname(__file__), 'embed') # os.path.dirname(__file__) = moiro_testTool/moiro_web
 
 def gen_frames():
@@ -21,26 +22,13 @@ def gen_frames():
         except Exception as e:
             print(f"Error: {e}")
 
-@app.route('/get_file_list', methods=['GET'])
-def get_file_list():
-    dir_list = sorted(os.listdir(embed_path))
-    dir_list = [os.path.splitext(f)[0] for f in dir_list]
-
-    return jsonify(dir_list)
-
-@app.route('/get_names_from_file', methods=['POST'])
-def get_names_from_file():
-    filename = os.path.join(embed_path, f"{request.form['filename']}.txt")
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            names = [line.strip() for line in file.readlines()]
-        return jsonify(names)
-    return jsonify([])
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
+"""
+camera controller
+"""
 @app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -66,7 +54,28 @@ def stop_camera():
         kill_terminal("droidcam")
         return 'Camera stream stopped'
     return 'No camera stream to stop'
-###
+
+@app.route('/start_recording', methods=['POST'])
+def start_recording():
+    global recording
+    if camera_stream is not None and not recording:
+        camera_stream.start_recording()
+        recording = True
+        return 'Recording started'
+    return 'No camera stream to record from or already recording'
+
+@app.route('/stop_recording', methods=['POST'])
+def stop_recording():
+    global recording
+    if camera_stream is not None and recording:
+        camera_stream.stop_recording()
+        recording = False
+        return 'Recording stopped'
+    return 'No recording to stop'
+
+"""
+raspi controller
+"""
 @app.route('/start_rasp', methods=['POST'])
 def start_rasp():
     rasp_ip = request.form['rasp_ip']
@@ -74,7 +83,10 @@ def start_rasp():
     
     response = requests.post(f'http://{rasp_ip}:{rasp_port}/start_rasp')
     return response.text
-###
+
+"""
+COM1 controller
+"""
 @app.route('/start_adaface', methods=['POST'])
 def start_adaface():
     com1_ip = request.form['com1_ip']
@@ -83,6 +95,30 @@ def start_adaface():
     
     response = requests.post(f'http://{com1_ip}:{com1_port}/start_adaface',person_name)
     return response.text
+
+@app.route('/killAdaface', methods=['POST'])
+def killAdaface():
+    com1_ip = request.form['com1_ip']
+    com1_port = request.form['com1_port']
+    
+    response = requests.post(f'http://{com1_ip}:{com1_port}/killAdaface')
+    return response.text
+
+@app.route('/get_file_list', methods=['GET'])
+def get_file_list():
+    dir_list = sorted(os.listdir(embed_path))
+    dir_list = [os.path.splitext(f)[0] for f in dir_list]
+
+    return jsonify(dir_list)
+
+@app.route('/get_names_from_file', methods=['POST'])
+def get_names_from_file():
+    filename = os.path.join(embed_path, f"{request.form['filename']}.txt")
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            names = [line.strip() for line in file.readlines()]
+        return jsonify(names)
+    return jsonify([])
 
 @app.route('/reset_name', methods=['POST'])
 def reset_name():
@@ -99,14 +135,6 @@ def sync_play():
     com1_port = request.form['com1_port']
     
     response = requests.post(f'http://{com1_ip}:{com1_port}/sync_play')
-    return response.text
-
-@app.route('/killAdaface', methods=['POST'])
-def killAdaface():
-    com1_ip = request.form['com1_ip']
-    com1_port = request.form['com1_port']
-    
-    response = requests.post(f'http://{com1_ip}:{com1_port}/killAdaface')
     return response.text
 
 @app.route('/killSyncPlay', methods=['POST'])

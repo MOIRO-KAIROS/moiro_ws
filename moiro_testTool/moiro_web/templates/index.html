@@ -74,14 +74,17 @@
                 </div>
                 <div id="video-controls">
                     <div class="form-row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <input type="text" id="cam_ip" class="form-control" placeholder="Camera IP">
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <input type="text" id="cam_port" class="form-control" placeholder="Port">
                         </div>
                         <div class="form-group col-md-3">
                             <button id="camera-toggle-button" class="btn btn-primary btn-block" onclick="toggleCameraStream()">Connect Camera</button>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <button id="recording-toggle-button" class="btn btn-secondary btn-block" onclick="toggleRecording()">Start Recording</button>
                         </div>
                     </div>
                 </div>
@@ -299,6 +302,8 @@
                 .then(data => {
                     alert(data);
                     button.textContent = 'Connect Camera';
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-primary');
                     cameraStreaming = false;
                 })
                 .catch(error => console.error('Error:', error));
@@ -315,7 +320,43 @@
                 .then(data => {
                     alert(data);
                     button.textContent = 'Disconnect Camera';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-danger');
                     cameraStreaming = true;
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+        
+        function toggleRecording() {
+            const button = document.getElementById('recording-toggle-button');
+
+            if (button.innerText === 'Start Recording') {
+                fetch('/start_recording', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                .then(response => response.text())
+                .then(data => {
+                    button.innerText = 'Stop Recording';
+                    button.classList.remove('btn-secondary');
+                    button.classList.add('btn-danger');
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                fetch('/stop_recording', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                })
+                .then(response => response.text())
+                .then(data => {
+                    button.innerText = 'Start Recording';
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-secondary');
                 })
                 .catch(error => console.error('Error:', error));
             }
