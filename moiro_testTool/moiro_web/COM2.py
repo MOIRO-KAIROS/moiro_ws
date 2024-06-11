@@ -10,7 +10,6 @@ app = Flask(__name__)
 
 # adaface_ros 패키지의 경로 설정
 human_follower_path = os.path.abspath(os.path.join(get_package_share_directory('human_follower'), "../../../"))
-mycobot_path = os.path.abspath(os.path.join(get_package_share_directory('moiro_arm_move_group'), "../../../"))
 
 @app.route('/start_follower', methods=['POST'])
 def start_follower():
@@ -32,15 +31,6 @@ def reset_depth():
     
     return f'Depth reset as {min_depth} ~ {max_depth} cm'
 
-@app.route('/mycobot', methods=['POST'])
-def mycobot():
-    kill_terminal('moiro_arm_move_group')
-    command = f"ros2 launch moiro_arm_move_group moiro_arm_move_group.launch.py"
-    subprocess.Popen(['bash', '-c', command], shell=False)
-    command = f"ros2 launch moiro_arm_move_group moiro_arm_move_group_service_class_interface.launch.py"
-    subprocess.Popen(['bash', '-c', command], shell=False)
-    return f'Mycobot started on COM2'
-
 @app.route('/killHF', methods=['POST'])
 def killHF():
     command = 'ros2 topic pub --once  /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}"'
@@ -49,10 +39,6 @@ def killHF():
     kill_terminal(os.path.join(human_follower_path, 'human_follower/lib/human_follower'))
     return 'Human Follower killed'
 
-@app.route('/killMycobot', methods=['POST'])
-def killMycobot():
-    kill_terminal(os.path.join(mycobot_path, 'moiro_arm_move_group/lib/moiro_arm_move_group'))
-    return 'Mycobot killed'
 
 if __name__ == '__main__':
     try:

@@ -8,6 +8,16 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Prevents scrolling on the body */
+        }
+
+        .container-fluid {
+            height: 100%;
+        }
+
         #video-container {
             position: relative;
             width: 100%;
@@ -18,35 +28,37 @@
             padding: 0;
             border: 1px solid black;
             box-sizing: border-box;
-            background-color: #333; 
+            background-color: #333;
         }
+
         #video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         #video-controls {
             width: 100%;
-            margin-top: 5px; 
+            margin-top: 5px;
             margin-left: 50px;
             text-align: center;
             background: rgba(255, 255, 255, 0.8);
             padding: 10px;
             border-radius: 5px;
         }
+
         .reset-button {
             width: 75px;
             height: 40px;
             font-size: 16px;
         }
+
         .scrollable-column {
-            left : 150px;
-            max-height: 800px; /* Adjust this value as needed */
+            left: 100px;
+            max-height: calc(100vh - 100px); /* Adjust based on other elements' heights */
             overflow-y: auto;
-            margin: 50px;
-        }
-        body{
-            overflow-y: hidden;
+            margin: 30px;
+            padding-right: 15px; /* Add padding to avoid hiding content behind scrollbar */
         }
     </style>
 </head>
@@ -146,6 +158,14 @@
                                         <button class="btn btn-danger btn-block" onclick="handleCOM1('killSyncPlay')">Kill Sync Play</button>
                                     </div>
                                 </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <button class="btn btn-primary btn-block mb-2" onclick="handleCOM1('mycobot')">Start Mycobot</button>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <button class="btn btn-danger btn-block" onclick="handleCOM1('killMycobot')">Kill Mycobot</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -188,14 +208,6 @@
                                         <button class="btn btn-danger btn-block mb-2" onclick="handleCOM2('killHF')">Kill Follower</button>
                                     </div>
                                 </div>
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <button class="btn btn-primary btn-block mb-2" onclick="handleCOM2('mycobot')">Start Mycobot</button>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <button class="btn btn-danger btn-block" onclick="handleCOM2('killMycobot')">Kill Mycobot</button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,7 +215,6 @@
             </div>
         </div>
     </div>
-
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
@@ -329,6 +340,9 @@
             else if(action == 'killSyncPlay'){
                 alert('SyncPlay is killed');
             }
+            else if(action == 'killMycobot'){
+                alert('Mycobot is killed');
+            }
 
             fetch(`/${action}`, {
                 method: 'POST',
@@ -359,9 +373,7 @@
             else if(action == 'killHF'){
                 alert('Human follower is killed');
             }
-            else if(action == 'killMycobot'){
-                alert('Mycobot is killed');
-            }
+            
             fetch(`/${action}`, {
                 method: 'POST',
                 headers: {

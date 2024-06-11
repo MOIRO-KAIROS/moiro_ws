@@ -8,6 +8,8 @@ app = Flask(__name__)
 
 # adaface_ros 패키지의 경로 설정
 adaface_ros_path = os.path.abspath(os.path.join(get_package_share_directory('adaface_ros'), "../../../"))
+mycobot_path = os.path.abspath(os.path.join(get_package_share_directory('moiro_arm_move_group'), "../../../"))
+
 @app.route('/start_adaface', methods=['POST'])
 def start_adaface():
     kill_terminal(os.path.join(adaface_ros_path, 'adaface_ros/lib/adaface_ros'))
@@ -41,6 +43,15 @@ def sync_play():
     
     return 'Sync play start'
 
+@app.route('/mycobot', methods=['POST'])
+def mycobot():
+    kill_terminal('moiro_arm_move_group')
+    command = f"ros2 launch moiro_arm_move_group moiro_arm_move_group.launch.py"
+    subprocess.Popen(['bash', '-c', command], shell=False)
+    command = f"ros2 launch moiro_arm_move_group moiro_arm_move_group_service_class_interface.launch.py"
+    subprocess.Popen(['bash', '-c', command], shell=False)
+    return f'Mycobot started on COM1'
+
 @app.route('/killAdaface', methods=['POST'])
 def killAdaface():
     kill_terminal(os.path.join(adaface_ros_path, 'adaface_ros/lib/adaface_ros'))
@@ -53,6 +64,10 @@ def killSyncPlay():
     kill_terminal('moiro_arm_robot_driver/lib/moiro_arm_robot_driver')
     return 'Sync play killed'
 
+@app.route('/killMycobot', methods=['POST'])
+def killMycobot():
+    kill_terminal(os.path.join(mycobot_path, 'moiro_arm_move_group/lib/moiro_arm_move_group'))
+    return 'Mycobot killed'
 if __name__ == '__main__':
     try:
         app.run(host='0.0.0.0', port=5000)

@@ -139,10 +139,10 @@ def reset_depth():
 
 @app.route('/mycobot', methods=['POST'])
 def mycobot():
-    com2_ip = request.form['com2_ip']
-    com2_port = request.form['com2_port']
+    com1_ip = request.form['com1_ip']
+    com1_port = request.form['com1_port']
     
-    response = requests.post(f'http://{com2_ip}:{com2_port}/mycobot')
+    response = requests.post(f'http://{com1_ip}:{com1_port}/mycobot')
     return response.text
 
 @app.route('/killHF', methods=['POST'])
@@ -155,10 +155,10 @@ def killHF():
 
 @app.route('/killMycobot', methods=['POST'])
 def killMycobot():
-    com2_ip = request.form['com2_ip']
-    com2_port = request.form['com2_port']
+    com1_ip = request.form['com1_ip']
+    com1_port = request.form['com1_port']
     
-    response = requests.post(f'http://{com2_ip}:{com2_port}/killMycobot')
+    response = requests.post(f'http://{com1_ip}:{com1_port}/killMycobot')
     return response.text
 
 if __name__ == '__main__':
