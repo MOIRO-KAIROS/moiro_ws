@@ -7,7 +7,6 @@
 
 - ROS2 Humble Project for MOIRO
 - ```moiro_ws```는 실시간으로 타겟 인물을 촬영하는 로봇의 제어를 위한 ROS2 Workspace입니다.
-- 
   
 <div align=center><h1></h1><h1>📸 STACKS</h1></div>
 
