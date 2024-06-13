@@ -26,7 +26,7 @@ def reset_depth():
     min_depth = request.json[0]
     max_depth = request.json[1]
     
-    command = f"ros2 service call /vision/target_depth moiro_interfaces/srv/TargetDepth \"{{min_depth: {min_depth}}}\"{{max_depth: {max_depth}}}\""
+    command = f"ros2 service call /vision/target_depth moiro_interfaces/srv/TargetDepth \"{{min_depth: {min_depth}, max_depth: {max_depth}}}\""
     subprocess.Popen(['bash', '-c', command], shell=False)
     
     return f'Depth reset as {min_depth} ~ {max_depth} cm'
