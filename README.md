@@ -1,10 +1,21 @@
-# MOIRO Workspace
 
-## 0. Intro
+<div align="center">
+  <h1>MOIRO Workspace
+  <div style="float: left; margin-right: 20px;">
+    <img src="https://github.com/MOIRO-KAIROS/moiro_ws/assets/114575723/f8eed014-ac45-4018-9183-0c9311b1579a" alt="moiro_web" width="100" height="100">
+  </div>
+</div>
+
+<div align="center">
+  <h2>Intro</h2>
+</div>
+
 - ROS2 Humble Project for MOIRO
 - `moiro_ws`는 실시간으로 타겟 인물을 촬영하는 로봇의 제어를 위한 workspace입니다.
-
-## 1. Spec
+--------------------------------------------------------------------------------------------------------
+<div align="center">
+  <h2>Spec</h2>
+</div>
 <table>
   <tr>
     <td>
@@ -63,9 +74,11 @@
   </tr>
 </table>
 
+--------------------------------------------------------------------------------------------------------
+<div align="center">
+  <h2> Setup</h2>
+</div>
 
-
-## 2. Setup
 ### 1) Install & Submodule update
 
 ```sh
@@ -103,9 +116,12 @@ echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 echo "export ROS_DOMAIN_ID=<$WANTED_ROS_DOMAIN>" >> ~/.bashrc
 echo "source $HOME/moiro_ws/install/setup.bash" >> ~/.bashrc
 ```
+--------------------------------------------------------------------------------------------------------
+<div align="center">
+  <h2> Run</h2>
+</div>
 
-## 3. RUN
-### 1) Terminal로 실행하는 방법
+### 1) Using Terminal
 - 명령어 순서 매우 주의해서 입력
 
 ```sh
@@ -130,7 +146,7 @@ ros2 run human_follower human_follower min_depth:=<$min_depth> max_depth:=<$max_
 ```
 droidcam
 ```
-#### (2) Terminal 입력
+#### (2) Terminal
 ```
 # port 가 이미 지정되어 있다면,
 lsof -n -i -P | grep {PORT_NUM} | grep -v grep | awk '{print $2}' | xargs kill -9
@@ -160,18 +176,13 @@ python3 moiro_testTool/moiro_web/COM2.py
 # lsof -n -i -P | grep 5001 | grep -v grep | awk '{print $2}' | xargs kill -9
 python3 moiro_testTool/moiro_web/COM1.py
 ```
-#### (3) Button 제어
+#### (3) Button Control
 - 버튼의 순서를 지켜서 시행해야함
 - Reset의 경우, start만 했으면 적용됨
 - [```Sequence```] Driodcam Connect -> Raspberry Pi connect -> start Adaface -> Sync play -> start Mycobot -> start Follower  
+--------------------------------------------------------------------------------------------------------
+<div align="center">
+  <h2> Result</h2>
+</div>
 
-### 3) GUI로 실행하는 방법 - Debug 용
-#### (1) droidcam 실행
-```
-droidcam
-```
-##### (2) Terminal 입력
-```sh
-// pip install pyqt5==5.13
-ros2 run moiro_gui moiro_gui_simple
-```
+
