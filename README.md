@@ -267,7 +267,7 @@ python3 moiro_testTool/moiro_web/COM1.py
         <strong>노우성 (Woosung Roh)</strong>
       </td>
       <td style="text-align: center;">
-        <p>Urdf and Moveit</p>
+        <p>Urdf and MoveIt</p>
       </td>
     </tr>
     <tr>
