@@ -67,7 +67,13 @@ def killSyncPlay():
 @app.route('/killMycobot', methods=['POST'])
 def killMycobot():
     kill_terminal(os.path.join(mycobot_path, 'moiro_arm_move_group/lib/moiro_arm_move_group'))
+    kill_terminal(os.path.join(mycobot_path, '/opt/ros/humble/lib/rviz2'))
+    kill_terminal(os.path.join(mycobot_path, '/opt/ros/humble/lib/tf2_ros'))
+    kill_terminal(os.path.join(mycobot_path, '/opt/ros/humble/lib/robot_state_publisher'))
+    kill_terminal(os.path.join(mycobot_path, '/opt/ros/humble/lib/moveit_ros_move_group'))
+    kill_terminal(os.path.join(mycobot_path, '/opt/ros/humble/lib/controller_manager'))
     return 'Mycobot killed'
+
 if __name__ == '__main__':
     try:
         app.run(host='0.0.0.0', port=5000)
